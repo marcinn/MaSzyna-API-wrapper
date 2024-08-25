@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="MaszynaTBrake" inherits="Node" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+    <brief_description>
+    </brief_description>
+    <description>
+        Class handling brake system with brake types and parameters
+    </description>
+    <tutorials>
+    </tutorials>
+    <methods>
+        <method name="GetBCF" >
+            <return type="float" />
+            <description>
+            </description>
+        </method>
+        <method name="GetBCP" >
+            <return type="float" />
+            <description>
+                Brake cylinder pressure
+            </description>
+        </method>
+        <method name="GetBRP" >
+            <return type="float" />
+            <description>
+                Auxiliary tank pressure
+            </description>
+        </method>
+        <method name="GetCRP" >
+            <return type="float" />
+            <description>
+                Control tank pressure
+            </description>
+        </method>
+        <method name="GetEDBCP" >
+            <return type="float" />
+            <description>
+                Electrodynamic brake control pressure
+            </description>
+        </method>
+        <method name="GetFC" >
+            <return type="float" />
+            <param index="0" name="_unnamed_arg0" type="float" />
+            <param index="1" name="_unnamed_arg1" type="float" />
+            <description>
+                Brake friction coefficient
+            </description>
+        </method>
+        <method name="GetHPFlow" >
+            <return type="float" />
+            <param index="0" name="_unnamed_arg0" type="float" />
+            <param index="1" name="_unnamed_arg1" type="float" />
+            <description>
+                Flow from the supply line
+            </description>
+        </method>
+        <method name="GetPF" >
+            <return type="float" />
+            <param index="0" name="_unnamed_arg0" type="float" />
+            <param index="1" name="_unnamed_arg1" type="float" />
+            <param index="2" name="_unnamed_arg2" type="float" />
+            <description>
+                Flow between pre-chamber and main pipe
+            </description>
+        </method>
+        <method name="GetVRP" >
+            <return type="float" />
+            <description>
+                Pre-chamber pressure
+            </description>
+        </method>
+    </methods>
+</class>

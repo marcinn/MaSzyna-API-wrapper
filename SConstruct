@@ -8,7 +8,8 @@ def normalize_path(val, env):
 
 def validate_parent_dir(key, val, env):
     if not os.path.isdir(normalize_path(os.path.dirname(val), env)):
-        raise UserError("'%s' is not a directory: %s" % (key, os.path.dirname(val)))
+        raise UserError("'%s' is not a directory: %s" %
+                        (key, os.path.dirname(val)))
 
 
 libname = "maszyna"
@@ -51,11 +52,13 @@ env.Alias("compiledb", compilation_db)
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
 env.Append(CPPPATH=["src/"])
-sources = Glob("src/*.cpp")
+sources = Glob("src/*.cpp") + Glob("src/maszyna/*.cpp") + Glob("src/maszyna/McZapkie/*.cpp")
 
 if env["target"] in ["editor", "template_debug"]:
     try:
-        doc_data = env.GodotCPPDocData("src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml"))
+        doc_data = env.GodotCPPDocData(
+            "src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml")
+        )
         sources.append(doc_data)
     except AttributeError:
         print("Not including class reference as we're targeting a pre-4.3 baseline.")
@@ -72,7 +75,9 @@ library = env.SharedLibrary(
     source=sources,
 )
 
-copy = env.InstallAs("{}/bin/{}/lib{}".format(projectdir, env["platform"], file), library)
+copy = env.InstallAs(
+    "{}/bin/{}/lib{}".format(projectdir, env["platform"], file), library
+)
 
 default_args = [library, copy]
 if localEnv.get("compiledb", False):

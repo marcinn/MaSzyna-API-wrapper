@@ -13,3 +13,7 @@ Info.plist
 *.dylib
 /.idea/
 *tmp
+
+/doc
+/platform
+/modules
