@@ -1,0 +1,15 @@
+/venv/
+/demo/.godot/
+/cmake-build-debug/
+CMakeLists.txt
+*.o
+*.os
+*.dll
+*.so
+*.a
+Info.plist
+*.import
+.sconsign.dblite
+*.dylib
+/.idea/
+*tmp
