@@ -1,1 +1,13 @@
 set expandtab
+
+let &path.= "godot-cpp/gen/include,godot-cpp/gdextension/godot-cpp/inlcude,"
+
+let g:ale_fixers = {
+    \ 'cpp' : ['clang-format'],
+    \ 'hpp' : ['clang-format']
+    \}
+
+let g:ale_linters = {
+    \ 'cpp' : ['clangtidy'],
+    \ 'hpp' : ['clangtidy']
+    \}
