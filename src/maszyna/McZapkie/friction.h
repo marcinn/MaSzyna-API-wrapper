@@ -32,119 +32,96 @@ Zrobione:
 */
 
 
-
-//uses hamulce;
+// uses hamulce;
 namespace Maszyna {
 
-    class TFricMat {
-        public:
-            virtual double GetFC(double N, double Vel);
-
-    };
-
+	class TFricMat {
+		public:
+			virtual double GetFC(double N, double Vel);
+	};
 
 
-    class TP10Bg: public TFricMat
+	class TP10Bg : public TFricMat
 
-    {
-        public:
-            double GetFC(double N, double Vel)/*override*/;
-
-    };
-
+	{
+		public:
+			double GetFC(double N, double Vel) /*override*/;
+	};
 
 
-    class TP10Bgu: public TFricMat
+	class TP10Bgu : public TFricMat
 
-    {
-        public:
-            double GetFC(double N, double Vel)/*override*/;
-
-    };
-
+	{
+		public:
+			double GetFC(double N, double Vel) /*override*/;
+	};
 
 
-    class TP10yBg: public TFricMat
+	class TP10yBg : public TFricMat
 
-    {
-        public:
-            double GetFC(double N, double Vel)/*override*/;
-
-    };
-
+	{
+		public:
+			double GetFC(double N, double Vel) /*override*/;
+	};
 
 
-    class TP10yBgu: public TFricMat
+	class TP10yBgu : public TFricMat
 
-    {
-        public:
-            double GetFC(double N, double Vel)/*override*/;
-
-    };
-
+	{
+		public:
+			double GetFC(double N, double Vel) /*override*/;
+	};
 
 
-    class TP10: public TFricMat
+	class TP10 : public TFricMat
 
-    {
-        public:
-            double GetFC(double N, double Vel)/*override*/;
-
-    };
-
+	{
+		public:
+			double GetFC(double N, double Vel) /*override*/;
+	};
 
 
-    class TFR513: public TFricMat
+	class TFR513 : public TFricMat
 
-    {
-        public:
-            double GetFC(double N, double Vel)/*override*/;
-
-    };
-
+	{
+		public:
+			double GetFC(double N, double Vel) /*override*/;
+	};
 
 
-    class TFR510: public TFricMat
+	class TFR510 : public TFricMat
 
-    {
-        public:
-            double GetFC(double N, double Vel)/*override*/;
-
-    };
-
+	{
+		public:
+			double GetFC(double N, double Vel) /*override*/;
+	};
 
 
-    class TCosid: public TFricMat
+	class TCosid : public TFricMat
 
-    {
-        public:
-            double GetFC(double N, double Vel)/*override*/;
-
-    };
-
+	{
+		public:
+			double GetFC(double N, double Vel) /*override*/;
+	};
 
 
-    class TDisk1: public TFricMat
+	class TDisk1 : public TFricMat
 
-    {
-        public:
-            double GetFC(double N, double Vel)/*override*/;
-
-    };
-
+	{
+		public:
+			double GetFC(double N, double Vel) /*override*/;
+	};
 
 
-    class TDisk2: public TFricMat
+	class TDisk2 : public TFricMat
 
-    {
-        public:
-            double GetFC(double N, double Vel)/*override*/;
-
-    };
-
+	{
+		public:
+			double GetFC(double N, double Vel) /*override*/;
+	};
 
 
-}
+} // namespace Maszyna
 
-#endif//INCLUDED_FRICTION_H
-      //END
+#endif // INCLUDED_FRICTION_H
+	   // END

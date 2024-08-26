@@ -20,6 +20,7 @@ namespace godot {
         ClassDB::bind_method(D_METHOD("GetBCF"), &MaszynaTBrake::GetBCF);
     }
 
+	//Clang-Tidy: Constructor does not initialize these fields: brakes
     MaszynaTBrake::MaszynaTBrake() {
         // move to _init or _ready signal
         initialize_brakes();
@@ -29,9 +30,9 @@ namespace godot {
         // ta metoda powinna byc wywolana po kazdym property change (jak juz
         // atrybuty beda mialy properties, chyba ze da sie maszynowy TBrake zmieniac z
         // zewnatrz
-        this->brakes = new Maszyna::TBrake(i_mbp, i_bcr, i_bcd, i_brc, i_bcn, i_BD, i_mat, i_ba, i_nbpa);
+        this->brakes = new TBrake(i_mbp, i_bcr, i_bcd, i_brc, i_bcn, i_BD, i_mat, i_ba, i_nbpa);
         brakes->Init(PP, HPP, LPP, BP, BDF);
-        godot::UtilityFunctions::print("[MaSzyna::Brake] Brakes initialized successfully");
+        UtilityFunctions::print("[MaSzyna::Brake] Brakes initialized successfully");
     }
 
     /**
@@ -39,42 +40,42 @@ namespace godot {
      * @param N
      * @return Brake friction coefficient
      */
-    double MaszynaTBrake::GetFC(const double Vel, const double N) {
+    double MaszynaTBrake::GetFC(const double Vel, const double N) const {
         return brakes->GetFC(Vel, N);
     }
 
     /**
      * @return Brake cylinder pressure
      */
-    double MaszynaTBrake::GetBCP() {
+    double MaszynaTBrake::GetBCP() const {
         return brakes->GetBCP();
     }
 
     /**
      * @return Electrodynamic brake control pressure
      */
-    double MaszynaTBrake::GetEDBCP() {
+    double MaszynaTBrake::GetEDBCP() const {
         return brakes->GetEDBCP();
     }
 
     /**
      * @return Auxiliary tank pressure
      */
-    double MaszynaTBrake::GetBRP() {
+    double MaszynaTBrake::GetBRP() const {
         return brakes->GetBRP();
     }
 
     /**
      * @return Pre-chamber pressure
      */
-    double MaszynaTBrake::GetVRP() {
+    double MaszynaTBrake::GetVRP() const {
         return brakes->GetVRP();
     }
 
     /**
      * @return Control tank pressure
      */
-    double MaszynaTBrake::GetCRP() {
+    double MaszynaTBrake::GetCRP() const {
         return brakes->GetCRP();
     }
 
@@ -85,7 +86,7 @@ namespace godot {
      * @param Vel
      * @return
      */
-    double MaszynaTBrake::GetPF(double const PP, double const dt, double const Vel) {
+    double MaszynaTBrake::GetPF(double const PP, double const dt, double const Vel) const {
         return brakes->GetPF(PP, dt, Vel);
     }
 
@@ -95,14 +96,14 @@ namespace godot {
      * @param dt
      * @return
      */
-    double MaszynaTBrake::GetHPFlow(double const HP, double const dt) {
+    double MaszynaTBrake::GetHPFlow(double const HP, double const dt) const {
         return brakes->GetHPFlow(HP, dt);
     }
 
     /**
      * @return Piston force from the piston
      */
-    double MaszynaTBrake::GetBCF() {
+    double MaszynaTBrake::GetBCF() const {
         return brakes->GetBCF();
     }
 }
