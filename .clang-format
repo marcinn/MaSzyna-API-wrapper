@@ -7,12 +7,13 @@ AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignOperands: true
 AlignTrailingComments: true
+AlignAfterOpenBracket: AlwaysBreak
 AlwaysBreakTemplateDeclarations: Yes
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortBlocksOnASingleLine: Empty
 BraceWrapping:
   AfterObjCDeclaration: false
-  IndentBraces: true
+  IndentBraces: false
   AfterCaseLabel: false
   AfterClass: false
   AfterControlStatement: false

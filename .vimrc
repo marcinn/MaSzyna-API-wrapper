@@ -11,3 +11,6 @@ let g:ale_linters = {
     \ 'cpp' : ['clangtidy'],
     \ 'hpp' : ['clangtidy']
     \}
+
+set colorcolumn=120
+set textwidth=120
