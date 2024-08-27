@@ -1,10 +1,8 @@
 #include <godot_cpp/classes/gd_extension.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
+#include "MaszynaTBrake.hpp"
 #include "maszyna/McZapkie/hamulce.h"
-#include "MaszynaTBrake.h"
-
-using namespace godot;
 
 namespace godot {
 
@@ -20,7 +18,7 @@ namespace godot {
         ClassDB::bind_method(D_METHOD("GetBCF"), &MaszynaTBrake::GetBCF);
     }
 
-	//Clang-Tidy: Constructor does not initialize these fields: brakes
+    // Clang-Tidy: Constructor does not initialize these fields: brakes
     MaszynaTBrake::MaszynaTBrake() {
         // move to _init or _ready signal
         initialize_brakes();
@@ -106,4 +104,4 @@ namespace godot {
     double MaszynaTBrake::GetBCF() const {
         return brakes->GetBCF();
     }
-}
+} // namespace godot
