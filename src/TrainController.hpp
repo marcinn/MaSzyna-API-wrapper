@@ -24,8 +24,6 @@ namespace godot {
             Dictionary state;
 
             bool sw_battery_enabled = false;
-            bool sw_fuel_pump_enabled = false;
-            bool sw_oil_pump_enabled = false;
 
             double nominal_battery_voltage = 0.0; // FIXME: move to TrainPower ?
             double mass = 0.0;
@@ -79,12 +77,6 @@ namespace godot {
             bool get_battery_enabled() const;
             void set_mass(const double p_mass);
             double get_mass() const;
-
-            // FIXME: move to TrainDieselEngine
-            bool get_fuel_pump_enabled() const;
-            void set_fuel_pump_enabled(const bool p_state);
-            bool get_oil_pump_enabled() const;
-            void set_oil_pump_enabled(const bool p_state);
 
             Vector<TrainSwitch *> get_train_switches();
 
