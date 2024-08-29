@@ -52,7 +52,7 @@ env.Alias("compiledb", compilation_db)
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
 env.Append(CPPPATH=["src/"])
-sources = Glob("src/*.cpp") + Glob("src/maszyna/*.cpp") + Glob("src/maszyna/McZapkie/*.cpp")
+sources = Glob("src/*.cpp") + Glob("src/maszyna/*.cpp") + Glob("src/maszyna/McZapkie/*.cpp") + Glob("src/switches/*.cpp")
 
 if env["target"] in ["editor", "template_debug"]:
     try:

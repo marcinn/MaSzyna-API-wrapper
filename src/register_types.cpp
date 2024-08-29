@@ -4,35 +4,57 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 
-#include "MaszynaTBrake.hpp"
+#include "TrainBrake.hpp"
+#include "TrainController.hpp"
+#include "TrainDieselEngine.hpp"
+#include "TrainElectricEngine.hpp"
+#include "TrainElectricSeriesEngine.hpp"
+#include "TrainEngine.hpp"
+#include "TrainPart.hpp"
+#include "TrainSwitch.hpp"
+#include "TrainSecuritySystem.hpp"
+#include "switches/TrainCompressorSwitch.hpp"
+#include "switches/TrainConverterSwitch.hpp"
+#include "switches/TrainMainSwitch.hpp"
 
 using namespace godot;
 
 void initialize_libmaszyna_module(ModuleInitializationLevel p_level) {
-	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
-		return;
-	}
+    if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
+        return;
+    }
 
-	GDREGISTER_CLASS(MaszynaTBrake);
+    GDREGISTER_ABSTRACT_CLASS(TrainPart);
+    GDREGISTER_CLASS(TrainBrake);
+    GDREGISTER_ABSTRACT_CLASS(TrainEngine);
+    GDREGISTER_CLASS(TrainDieselEngine);
+    GDREGISTER_ABSTRACT_CLASS(TrainElectricEngine);
+    GDREGISTER_CLASS(TrainElectricSeriesEngine);
+    GDREGISTER_CLASS(TrainController);
+    GDREGISTER_ABSTRACT_CLASS(TrainSwitch);
+    GDREGISTER_CLASS(TrainMainSwitch);
+    GDREGISTER_CLASS(TrainConverterSwitch);
+    GDREGISTER_CLASS(TrainCompressorSwitch);
+    GDREGISTER_CLASS(TrainSecuritySystem);
 }
 
 void uninitialize_libmaszyna_module(ModuleInitializationLevel p_level) {
-	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
-		return;
-	}
+    if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
+        return;
+    }
 }
 
 extern "C" {
-	// Initialization.
-	GDExtensionBool GDE_EXPORT libmaszyna_library_init(GDExtensionInterfaceGetProcAddress p_get_proc_address,
-													   const GDExtensionClassLibraryPtr p_library,
-													   GDExtensionInitialization *r_initialization) {
-		const GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library, r_initialization);
+    // Initialization.
+    GDExtensionBool GDE_EXPORT libmaszyna_library_init(
+            GDExtensionInterfaceGetProcAddress p_get_proc_address, const GDExtensionClassLibraryPtr p_library,
+            GDExtensionInitialization *r_initialization) {
+        const GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library, r_initialization);
 
-		init_obj.register_initializer(initialize_libmaszyna_module);
-		init_obj.register_terminator(uninitialize_libmaszyna_module);
-		init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
+        init_obj.register_initializer(initialize_libmaszyna_module);
+        init_obj.register_terminator(uninitialize_libmaszyna_module);
+        init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
 
-		return init_obj.init();
-	}
+        return init_obj.init();
+    }
 }
