@@ -1,5 +1,4 @@
 #pragma once
-#include <godot_cpp/classes/node.hpp>
 #include "TrainEngine.hpp"
 #include "maszyna/McZapkie/MOVER.h"
 
@@ -7,9 +6,8 @@
 namespace godot {
     class TrainController;
 
-    class TrainDieselEngine : public TrainEngine {
+    class TrainDieselEngine final : public TrainEngine {
             GDCLASS(TrainDieselEngine, TrainEngine)
-
         private:
             static void _bind_methods();
             double oil_min_pressure = 0.0;   // OilMinPressure -> OilPump.pressure_minimum
@@ -20,7 +18,7 @@ namespace godot {
             bool sw_oil_pump_enabled = false;
 
         protected:
-            virtual TEngineType get_engine_type() override;
+            TEngineType get_engine_type() override;
             void _do_update_internal_mover(TMoverParameters *mover) override;
             void _do_fetch_state_from_mover(TMoverParameters *mover, Dictionary &state) override;
 
@@ -35,10 +33,10 @@ namespace godot {
             void set_traction_force_max(double value);
 
             bool get_fuel_pump_enabled() const;
-            void set_fuel_pump_enabled(const bool p_state);
+            void set_fuel_pump_enabled(bool p_state);
 
             bool get_oil_pump_enabled() const;
-            void set_oil_pump_enabled(const bool p_state);
+            void set_oil_pump_enabled(bool p_state);
 
             TrainDieselEngine();
             ~TrainDieselEngine() override = default;

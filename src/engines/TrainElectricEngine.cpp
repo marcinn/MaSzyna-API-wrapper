@@ -2,13 +2,11 @@
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
-#include "TrainController.hpp"
 #include "TrainElectricEngine.hpp"
-// #include "TrainSwitchInfo.hpp"
 #include "maszyna/McZapkie/MOVER.h"
 
 namespace godot {
-    TrainElectricEngine::TrainElectricEngine() {};
+    TrainElectricEngine::TrainElectricEngine() = default;
 
     void TrainElectricEngine::_bind_methods() {
         ClassDB::bind_method(

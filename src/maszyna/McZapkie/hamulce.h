@@ -37,8 +37,7 @@ Knorr/West EP - żeby był
 #include <cstring>
 #include <memory>
 #include "friction.h" // Pascal unit
-#define M_PI 3.14159265358979323846
-
+#include "../../core/utils.hpp"
 using namespace Maszyna;
 
 namespace Maszyna {

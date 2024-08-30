@@ -1,12 +1,10 @@
-#include <godot_cpp/classes/gd_extension.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
 #include "TrainEngine.hpp"
 #include "maszyna/McZapkie/MOVER.h"
 
 namespace godot {
     class TrainController;
 
-    TrainEngine::TrainEngine() {}
+    TrainEngine::TrainEngine() = default;
 
     void TrainEngine::_bind_methods() {
         ClassDB::bind_method(D_METHOD("set_main_switch_pressed"), &TrainEngine::set_main_switch_pressed);
