@@ -60,10 +60,14 @@ namespace godot {
         mover->OilPump.pressure_minimum = oil_min_pressure;
         mover->OilPump.pressure_maximum = oil_max_pressure;
 
+        mover->Ftmax = traction_force_max;
+    }
+
+    void TrainDieselEngine::_do_process_mover(TMoverParameters *mover, const double delta) {
+        TrainEngine::_do_process_mover(mover, delta);
+
         mover->FuelPumpSwitch(sw_fuel_pump_enabled);
         mover->OilPumpSwitch(sw_oil_pump_enabled);
-
-        mover->Ftmax = traction_force_max;
     }
 
     double TrainDieselEngine::get_oil_min_pressure() const {
@@ -95,7 +99,6 @@ namespace godot {
 
     void TrainDieselEngine::set_fuel_pump_enabled(const bool p_state) {
         sw_fuel_pump_enabled = p_state;
-        _dirty = true;
     }
 
     bool TrainDieselEngine::get_fuel_pump_enabled() const {
@@ -104,7 +107,6 @@ namespace godot {
 
     void TrainDieselEngine::set_oil_pump_enabled(const bool p_state) {
         sw_oil_pump_enabled = p_state;
-        _dirty = true;
     }
 
     bool TrainDieselEngine::get_oil_pump_enabled() const {
