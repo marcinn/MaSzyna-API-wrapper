@@ -15,8 +15,6 @@ namespace godot {
     void TrainEngine::_do_update_internal_mover(TMoverParameters *mover) {
         mover->EngineType = get_engine_type();
 
-        mover->MainSwitch(main_switch_pressed);
-
         /* FIXME: for testing purposes */
         mover->GroundRelay = true;
         mover->NoVoltRelay = true;
@@ -24,6 +22,11 @@ namespace godot {
         mover->DamageFlag = false;
         mover->EngDmgFlag = false;
         mover->ConvOvldFlag = false;
+        /* end testing */
+    }
+
+    void TrainEngine::_do_process_mover(TMoverParameters *mover, const double delta) {
+        mover->MainSwitch(main_switch_pressed);
     }
 
     void TrainEngine::_do_fetch_state_from_mover(TMoverParameters *mover, Dictionary &state) {
