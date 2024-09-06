@@ -23,8 +23,6 @@ namespace godot {
             ~TrainSecuritySystem() override = default;
 
         private:
-            bool enabled = true;
-
             bool aware_system_active = false;
             bool aware_system_cabsignal = false;
             bool aware_system_separate_acknowledge = false;
@@ -55,7 +53,6 @@ namespace godot {
             double get_sound_signal_delay() const;
             double get_shp_magnet_distance() const;
             double get_ca_max_hold_time() const;
-            bool get_enabled() const;
 
             // Setters
             void set_reset_pushed(bool p_state);
@@ -70,7 +67,6 @@ namespace godot {
             void set_sound_signal_delay(double value);
             void set_shp_magnet_distance(double value);
             void set_ca_max_hold_time(double value);
-            void set_enabled(bool value);
     };
 } // namespace godot
 VARIANT_ENUM_CAST(TrainSecuritySystem::EmergencyBrakeWarningSignal)

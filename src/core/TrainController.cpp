@@ -11,13 +11,16 @@
 
 namespace godot {
 
+    const char *TrainController::MOVER_CONFIG_CHANGED_SIGNAL = "mover_config_changed";
+    const char *TrainController::POWER_CHANGED_SIGNAL = "power_changed";
+    const char *TrainController::COMMAND_RECEIVED = "command_received";
+
     void TrainController::_bind_methods() {
         ClassDB::bind_method(D_METHOD("set_state"), &TrainController::set_state);
         ClassDB::bind_method(D_METHOD("get_state"), &TrainController::get_state);
         ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "state"), "set_state", "get_state");
-        ClassDB::bind_method(D_METHOD("get_brake"), &TrainController::get_brake);
-        ClassDB::bind_method(D_METHOD("get_engine"), &TrainController::get_engine);
-        ClassDB::bind_method(D_METHOD("get_security_system"), &TrainController::get_security_system);
+
+        ClassDB::bind_method(D_METHOD("send_command"), &TrainController::send_command);
 
         ClassDB::bind_method(D_METHOD("get_mover_state"), &TrainController::get_mover_state);
         ClassDB::bind_method(D_METHOD("update_mover"), &TrainController::update_mover);
@@ -43,31 +46,17 @@ namespace godot {
         ClassDB::bind_method(D_METHOD("set_nominal_battery_voltage"), &TrainController::set_nominal_battery_voltage);
         ClassDB::bind_method(D_METHOD("get_nominal_battery_voltage"), &TrainController::get_nominal_battery_voltage);
 
-        ClassDB::bind_method(D_METHOD("set_engine_path"), &TrainController::set_engine_path);
-        ClassDB::bind_method(D_METHOD("get_engine_path"), &TrainController::get_engine_path);
-        ADD_PROPERTY(
-                PropertyInfo(Variant::NODE_PATH, "parts/engine", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "TrainEngine"),
-                "set_engine_path", "get_engine_path");
-
-        ClassDB::bind_method(D_METHOD("set_brake_path"), &TrainController::set_brake_path);
-        ClassDB::bind_method(D_METHOD("get_brake_path"), &TrainController::get_brake_path);
-        ADD_PROPERTY(
-                PropertyInfo(Variant::NODE_PATH, "parts/brake", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "TrainBrake"),
-                "set_brake_path", "get_brake_path");
-
-        ClassDB::bind_method(D_METHOD("set_security_system_path"), &TrainController::set_security_system_path);
-        ClassDB::bind_method(D_METHOD("get_security_system_path"), &TrainController::get_security_system_path);
-        ADD_PROPERTY(
-                PropertyInfo(
-                        Variant::NODE_PATH, "parts/security_system", PROPERTY_HINT_NODE_PATH_VALID_TYPES,
-                        "TrainSecuritySystem"),
-                "set_security_system_path", "get_security_system_path");
-
         ADD_PROPERTY(PropertyInfo(Variant::STRING, "type_name"), "set_type_name", "get_type_name");
         ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "dimensions/mass"), "set_mass", "get_mass");
         ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "power"), "set_power", "get_power");
         ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "max_velocity"), "set_max_velocity", "get_max_velocity");
         ADD_PROPERTY(PropertyInfo(Variant::STRING, "axle_arrangement"), "set_axle_arrangement", "get_axle_arrangement");
+
+        ADD_SIGNAL(MethodInfo(MOVER_CONFIG_CHANGED_SIGNAL));
+        ADD_SIGNAL(MethodInfo(POWER_CHANGED_SIGNAL, PropertyInfo(Variant::BOOL, "is_powered")));
+        ADD_SIGNAL(MethodInfo(
+                COMMAND_RECEIVED, PropertyInfo(Variant::STRING, "command"), PropertyInfo(Variant::NIL, "p1"),
+                PropertyInfo(Variant::NIL, "p2")));
 
         /* FIXME: move to TrainPower section? */
         ADD_PROPERTY(
@@ -83,84 +72,6 @@ namespace godot {
 
     TMoverParameters *TrainController::get_mover() const {
         return mover;
-    }
-
-    void TrainController::set_brake_path(const NodePath &p_path) {
-        if (brake_path != p_path) {
-            brake_path = p_path;
-            _brake = nullptr;
-            _dirty = true;
-        }
-    }
-
-    NodePath TrainController::get_brake_path() const {
-        return brake_path;
-    }
-
-    TrainBrake *TrainController::get_brake() const {
-        if (_brake) {
-            return _brake;
-        }
-
-        if (!brake_path.is_empty()) {
-            Node *node = get_node_or_null(brake_path);
-            if (node) {
-                _brake = cast_to<TrainBrake>(node);
-            }
-        }
-        return _brake;
-    }
-
-    void TrainController::set_engine_path(const NodePath &p_path) {
-        if (engine_path != p_path) {
-            engine_path = p_path;
-            _engine = nullptr;
-            _dirty = true;
-        }
-    }
-
-    NodePath TrainController::get_engine_path() const {
-        return engine_path;
-    }
-
-    TrainEngine *TrainController::get_engine() const {
-        if (_engine) {
-            return _engine;
-        }
-
-        if (!engine_path.is_empty()) {
-            Node *node = get_node_or_null(engine_path);
-            if (node) {
-                _engine = cast_to<TrainEngine>(node);
-            }
-        }
-        return _engine;
-    }
-
-    void TrainController::set_security_system_path(const NodePath &p_path) {
-        if (security_system_path != p_path) {
-            security_system_path = p_path;
-            _security_system = nullptr;
-            _dirty = true;
-        }
-    }
-
-    NodePath TrainController::get_security_system_path() const {
-        return security_system_path;
-    }
-
-    TrainSecuritySystem *TrainController::get_security_system() const {
-        if (_security_system) {
-            return _security_system;
-        }
-
-        if (!security_system_path.is_empty()) {
-            Node *node = get_node_or_null(security_system_path);
-            if (node) {
-                _security_system = cast_to<TrainSecuritySystem>(node);
-            }
-        }
-        return _security_system;
     }
 
     void TrainController::initialize_mover() {
@@ -205,46 +116,21 @@ namespace godot {
         }
     }
     void TrainController::_ready() {
-        /* nie daj borze w edytorze */
         if (Engine::get_singleton()->is_editor_hint()) {
             return;
-        }
-
-        _connect_signals_to_train_part(get_brake());
-        _connect_signals_to_train_part(get_engine());
-        _connect_signals_to_train_part(get_security_system());
-
-        /* eksperymentalna obsluga switchy umieszczanych jako dzieci TrainControllera
-         * automatycznie podpina sygnaly bez koniecznosci podpinania switchy przez NodePath/Assign */
-        Vector<TrainSwitch *> switches = get_train_switches();
-        for (const auto switche: switches) {
-            TrainSwitch *_s = cast_to<TrainSwitch>(switche);
-            if (_s) {
-                _connect_signals_to_train_part(_s);
-            }
         }
 
         initialize_mover();
 
         UtilityFunctions::print("TrainController::_ready() signals connected to train parts");
+        emit_signal(POWER_CHANGED_SIGNAL, is_powered);
     }
 
     void TrainController::_update_mover_config_if_dirty() {
         if (_dirty) {
-            /* zmienia sie istotny property glownego kontrolera
-             * trzeba wszystkie czesci odswiezyc
+            /* update all train parts
              */
-            _on_train_part_config_changed(get_brake());
-            _on_train_part_config_changed(get_engine());
-            _on_train_part_config_changed(get_security_system());
-
-            /* eksperymentalna obsluga switchy umieszczanych jako dzieci TrainControllera */
-            const Vector<TrainSwitch *> switches = get_train_switches();
-            for (auto switche: switches) {
-                _on_train_part_config_changed(switche);
-            }
-
-            // mover->CheckLocomotiveParameters(true, 0);
+            emit_signal(MOVER_CONFIG_CHANGED_SIGNAL);
 
             _dirty = false;
             _dirty_prop = true; // sforsowanie odswiezenia stanu lokalnych propsow
@@ -257,38 +143,15 @@ namespace godot {
     }
 
     void TrainController::_process_mover(const double delta) {
-        TrainPart *brake;
-        TrainPart *security;
-        TrainPart *engine;
-
-        brake = (TrainPart *)get_brake();
-        if (brake != nullptr) {
-            brake->_process_mover(this, delta);
-        }
-
-        security = (TrainPart *)get_security_system();
-        if (security != nullptr) {
-            security->_process_mover(this, delta);
-        }
-
-        engine = (TrainPart *)get_engine();
-        if (engine != nullptr) {
-            engine->_process_mover(this, delta);
-        }
-
         mover->ComputeTotalForce(delta);
         mover->compute_movement_(delta);
 
-        state.merge(internal_state, true);
+        state.merge(get_mover_state(), true);
 
-        if (brake != nullptr) {
-            state.merge(brake->get_mover_state(this), true);
-        }
-        if (engine != nullptr) {
-            state.merge(engine->get_mover_state(this), true);
-        }
-        if (security != nullptr) {
-            state.merge(security->get_mover_state(this), true);
+        bool new_is_powered = (state.get("power24_available", false) || state.get("power110_available", false));
+        if (is_powered != new_is_powered) {
+            is_powered = new_is_powered;
+            emit_signal(POWER_CHANGED_SIGNAL, is_powered);
         }
     }
 
@@ -321,7 +184,7 @@ namespace godot {
         if (part == nullptr) {
             return;
         }
-        part->update_mover(this);
+        part->update_mover();
     }
 
     double TrainController::get_nominal_battery_voltage() const {
@@ -375,29 +238,6 @@ namespace godot {
 
     String TrainController::get_axle_arrangement() const {
         return axle_arrangement;
-    }
-
-    Vector<TrainSwitch *> TrainController::get_train_switches() {
-        Vector<TrainSwitch *> train_switches;
-        _collect_train_switches(this, train_switches);
-        return train_switches;
-    }
-
-    // ReSharper disable once CppMemberFunctionMayBeStatic
-    void TrainController::_collect_train_switches(
-            const Node *node, Vector<TrainSwitch *> &train_switches) { // NOLINT(*-no-recursion)
-        if (node == nullptr) {
-            return;
-        }
-        for (int i = 0; i < node->get_child_count(); ++i) {
-            Node *child = node->get_child(i);
-
-            TrainSwitch *train_switch = dynamic_cast<TrainSwitch *>(child);
-            if (train_switch != nullptr) {
-                train_switches.push_back(train_switch);
-            }
-            _collect_train_switches(child, train_switches);
-        }
     }
 
     void TrainController::main_controller_increase() {
@@ -488,6 +328,10 @@ namespace godot {
 
     Dictionary TrainController::get_state() {
         return state;
+    }
+
+    void TrainController::send_command(StringName command, Variant p1, Variant p2) {
+        emit_signal(COMMAND_RECEIVED, command, p1, p2);
     }
 
 } // namespace godot
