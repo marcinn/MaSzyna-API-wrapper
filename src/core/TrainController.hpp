@@ -10,6 +10,7 @@ namespace godot {
     class TrainSwitch;
     class TrainSecuritySystem;
 
+
     class TrainController final : public Node {
             GDCLASS(TrainController, Node)
         private:
@@ -24,6 +25,7 @@ namespace godot {
             Dictionary internal_state;
 
             bool sw_battery_enabled = false;
+            bool is_powered = false;
 
             double nominal_battery_voltage = 0.0; // FIXME: move to TrainPower ?
             double mass = 0.0;
@@ -31,7 +33,7 @@ namespace godot {
             double max_velocity = 0.0;
             String axle_arrangement = "";
 
-            void _collect_train_switches(const Node *node, Vector<TrainSwitch *> &train_switches);
+            void _collect_train_parts(const Node *node, Vector<TrainPart *> &train_parts);
             void _connect_signals_to_train_part(TrainPart *part);
 
             void _update_mover_config_if_dirty();
@@ -46,33 +48,21 @@ namespace godot {
             void _do_fetch_state_from_mover(TMoverParameters *mover, Dictionary &state);
             void _process_mover(double delta);
 
+
         public:
+            static const char *MOVER_CONFIG_CHANGED_SIGNAL;
+            static const char *POWER_CHANGED_SIGNAL;
+            static const char *COMMAND_RECEIVED;
+
             void _process(double delta) override;
             void _ready() override;
             Dictionary get_mover_state();
+            void send_command(StringName command, Variant p1 = Variant(), Variant p2 = Variant());
             void update_mover() const;
             void _on_train_part_config_changed(TrainPart *part) const;
 
             TMoverParameters *get_mover() const;
             static void _bind_methods();
-
-            NodePath engine_path;
-            mutable TrainEngine *_engine;
-            void set_engine_path(const NodePath &p_path);
-            NodePath get_engine_path() const;
-            TrainEngine *get_engine() const;
-
-            NodePath brake_path;
-            mutable TrainBrake *_brake;
-            void set_brake_path(const NodePath &p_path);
-            NodePath get_brake_path() const;
-            TrainBrake *get_brake() const;
-
-            NodePath security_system_path;
-            mutable TrainSecuritySystem *_security_system;
-            void set_security_system_path(const NodePath &p_path);
-            NodePath get_security_system_path() const;
-            TrainSecuritySystem *get_security_system() const;
 
             String get_type_name() const;
             void set_type_name(const String &type_name);
@@ -96,8 +86,6 @@ namespace godot {
             void main_controller_decrease();
             void forwarder_increase();
             void forwarder_decrease();
-
-            Vector<TrainSwitch *> get_train_switches();
 
             TrainController();
             ~TrainController() override = default;

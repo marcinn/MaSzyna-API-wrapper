@@ -35,10 +35,6 @@ namespace godot {
         ADD_PROPERTY(
                 PropertyInfo(Variant::BOOL, "aware_system/sifa"), "set_aware_system_sifa", "get_aware_system_sifa");
 
-        ClassDB::bind_method(D_METHOD("get_enabled"), &TrainSecuritySystem::get_enabled);
-        ClassDB::bind_method(D_METHOD("set_enabled"), &TrainSecuritySystem::set_enabled);
-        ADD_PROPERTY(PropertyInfo(Variant::BOOL, "enabled"), "set_enabled", "get_enabled");
-
         ClassDB::bind_method(D_METHOD("get_aware_delay"), &TrainSecuritySystem::get_aware_delay);
         ClassDB::bind_method(D_METHOD("set_aware_delay"), &TrainSecuritySystem::set_aware_delay);
         ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "aware_delay"), "set_aware_delay", "get_aware_delay");
@@ -121,9 +117,6 @@ namespace godot {
     double TrainSecuritySystem::get_ca_max_hold_time() const {
         return ca_max_hold_time;
     }
-    bool TrainSecuritySystem::get_enabled() const {
-        return enabled;
-    }
 
     // Setters
     void TrainSecuritySystem::set_reset_pushed(bool p_state) {
@@ -172,10 +165,6 @@ namespace godot {
     }
     void TrainSecuritySystem::set_ca_max_hold_time(double value) {
         ca_max_hold_time = value;
-        _dirty = true;
-    }
-    void TrainSecuritySystem::set_enabled(bool p_state) {
-        enabled = p_state;
         _dirty = true;
     }
 

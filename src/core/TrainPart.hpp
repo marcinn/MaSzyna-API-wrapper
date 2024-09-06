@@ -7,10 +7,15 @@ namespace godot {
             GDCLASS(TrainPart, Node)
         public:
             static void _bind_methods();
+
+        private:
             Dictionary state;
 
         protected:
+            bool enabled = true;
+            bool enabled_changed = false;
             bool _dirty = false;
+            TrainController *train_controller_node;
 
             /* Jesli bedzie potrzeba rozdzielenia etapow inicjalizacji movera od jego aktualizacji,
              * to ta metoda powinna byc zaimplementowana analogicznie do _do_update_internal_mover(),
@@ -36,8 +41,13 @@ namespace godot {
 
         public:
             void _ready() override;
+            void _enter_tree() override;
+            void _exit_tree() override;
             void _process(double delta) override;
-            void _process_mover(const TrainController *train_controller_node, double delta);
+            virtual void _process_mover(double delta);
+
+            void set_enabled(bool p_value);
+            bool get_enabled();
 
             /* Jesli bedzie potrzeba rozdzielenia etapow inicjalizacji movera od jego aktualizacji,
              * to ta metoda powinna byc zaimplementowana analogicznie do update_mover(),
@@ -45,10 +55,10 @@ namespace godot {
             // void initialize_mover(TrainController *train_controller_node);
 
             /* High level method for updating the state of the Mover */
-            void update_mover(const TrainController *train_controller_node);
+            void update_mover();
 
             /* High level method for getting the state of the Mover */
-            Dictionary get_mover_state(const TrainController *train_controller_node);
+            Dictionary get_mover_state();
             TrainPart();
             ~TrainPart() override = default;
             void emit_config_changed_signal();
