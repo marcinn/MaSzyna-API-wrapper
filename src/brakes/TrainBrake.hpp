@@ -65,6 +65,7 @@ namespace godot {
                     {TBrakeValve::CV1, TBrakeSubSystem::ss_Dako},  {TBrakeValve::CV1_L_TR, TBrakeSubSystem::ss_Dako},
                     {TBrakeValve::LSt, TBrakeSubSystem::ss_LSt},   {TBrakeValve::EStED, TBrakeSubSystem::ss_LSt}};
 
+            // BrakeValve -> BrakeValve
             // assuming same int values between our TrainBrakeValve and mover's TBrakeValve
             TrainBrakeValve valve = static_cast<TrainBrakeValve>(static_cast<int>(TBrakeValve::NoValve));
 

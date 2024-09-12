@@ -69,6 +69,7 @@
 		</member>
 		<member name="max_pressures/medium" type="float" setter="set_max_pressure_medium" getter="get_max_pressure_medium" default="0.0">
 			(MedMaxBP)
+
 		</member>
 		<member name="max_pressures/tare" type="float" setter="set_max_pressure_tare" getter="get_max_pressure_tare" default="0.0">
 			(TareMaxBP)
