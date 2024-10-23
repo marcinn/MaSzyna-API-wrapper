@@ -14,15 +14,23 @@ signal kicked_off_train(peer_id: int, train_id: String)
 func _ready():
     multiplayer.peer_connected.connect(_on_peer_connected)
     multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+    multiplayer.connected_to_server.connect(_on_connected_to_server)
+    multiplayer.server_disconnected.connect(_on_server_disconnected)
+
 
 
 func _error(msg):
     push_error(msg)
     error_received.emit(msg)
 
+func _on_connected_to_server():
+    LogSystem.info("Connected to server successfully")
+
+func _on_server_disconnected():
+    LogSystem.info("Disconnected from server")
 
 func _on_peer_connected(peer_id: int):
-    print("Peer connected: %d" % peer_id)
+    LogSystem.info("Peer connected: %d" % peer_id)
     register_player.rpc(peer_id)
     set_player_name.rpc(peer_id, nick)
     if occupied_train:
@@ -31,7 +39,7 @@ func _on_peer_connected(peer_id: int):
 
 func _on_peer_disconnected(peer_id: int):
     unregister_player.rpc(peer_id)
-
+    LogSystem.info("Peer disconnected: %d" % peer_id)
 
 func _require_registered_player(peer_id):
     if not _players.has(peer_id):
@@ -90,6 +98,9 @@ func set_player_name(peer_id:int, nick: String):
     if _require_registered_player(peer_id):
         _players[peer_id].name = nick
 
+func get_player_name(peer_id:int):
+    if _require_registered_player(peer_id):
+        return _players[peer_id].name
 
 @rpc("any_peer", "call_local")
 func enter_train(peer_id:int, train_id:String):
@@ -129,3 +140,10 @@ func handle_train_occupy_conflict(train_id:String, actual_peer_id:int):
 func send_train_command(peer_id:int, train_id:String, command: String, p1 = null, p2 = null):
     if _require_train_occupied_by_player(peer_id, train_id):
         TrainSystem.send_command(train_id, command, p1, p2)
+
+func send_message(message: String):
+    receive_message.rpc(multiplayer.get_unique_id(), message)
+
+@rpc("any_peer", "call_remote")
+func receive_message(peer_id:int, message: String):
+    LogSystem.info("%s: %s" % [get_player_name(peer_id), message])
