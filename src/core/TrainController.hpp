@@ -23,6 +23,7 @@ namespace godot {
             void initialize_mover();
             bool _dirty = false;      // Refreshes all elements
             bool _dirty_prop = false; // Refreshes only TrainController's properties
+            bool occupied = true;
             Dictionary state;
             Dictionary config;
             Dictionary internal_state;
@@ -39,9 +40,12 @@ namespace godot {
             bool prev_radio_enabled = false;
             int prev_radio_channel = radio_channel;
 
+            bool state_changed = false;
+
             String axle_arrangement = "";
 
             void _collect_train_parts(const Node *node, Vector<TrainPart *> &train_parts);
+            void _on_state_changed();
 
         private:
             void _update_mover_config_if_dirty();
@@ -58,11 +62,13 @@ namespace godot {
             void _do_fetch_config_from_mover(TMoverParameters *mover, Dictionary &config) const;
             void _do_fetch_state_from_mover(TMoverParameters *mover, Dictionary &state);
             void _process_mover(double delta);
+            void _notification(int p_what);
 
 
         public:
             static const char *MOVER_CONFIG_CHANGED_SIGNAL;
             static const char *MOVER_INITIALIZED_SIGNAL;
+            static const char *STATE_CHANGED;
             static const char *POWER_CHANGED_SIGNAL;
             static const char *COMMAND_RECEIVED;
             static const char *RADIO_TOGGLED;
@@ -73,7 +79,6 @@ namespace godot {
             void update_config(const Dictionary &p_config);
             void set_config_property(String &key, Variant &p_value);
             void _process(double delta) override;
-            void _notification(int p_what);
             void send_command(const StringName &command, const Variant &p1 = Variant(), const Variant &p2 = Variant());
             void battery(const bool p_enabled);
             void main_controller_increase(const int p_step = 1);
@@ -89,8 +94,8 @@ namespace godot {
             void broadcast_command(const String &command, const Variant &p1 = Variant(), const Variant &p2 = Variant());
             void register_command(const String &command, const Callable &callable);
             void unregister_command(const String &command, const Callable &callable);
-            void update_state();
             void update_mover();
+            void mark_state_changed();
 
             TMoverParameters *get_mover() const;
             static void _bind_methods();
@@ -113,6 +118,8 @@ namespace godot {
             int get_radio_channel_max() const;
             void set_radio_channel_max(const int p_value);
             String get_axle_arrangement() const;
+            void set_occupied(const bool p_occupied);
+            bool get_occupied() const;
 
             void set_state(const Dictionary &p_state);
             Dictionary get_state();

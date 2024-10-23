@@ -19,11 +19,16 @@ namespace godot {
             void _do_fetch_config_from_mover(TMoverParameters *mover, Dictionary &config) override;
             void _register_commands() override;
             void _unregister_commands() override;
+            void _do_initialize_train_controller(TrainController *train_controller) override;
+
+        private:
+            bool previous_main_switch = false;
 
         public:
             TypedArray<Dictionary> get_motor_param_table();
             void set_motor_param_table(const TypedArray<Dictionary> p_wwlist);
             void main_switch(const bool p_enabled);
+            void _on_train_controller_state_changed();
 
             TrainEngine();
             ~TrainEngine() override = default;
