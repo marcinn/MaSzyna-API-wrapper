@@ -21,10 +21,11 @@ func _ready() -> void:
     Console.add_command("connect", self.console_connect_server, ["address"], 0, "Connect to a game server")
     Console.add_command("nick", self.console_set_nick, ["nick"], 1, "Set your nickname")
     Console.add_command("players", self.console_list_players, [], 0, "List all players")
-    TrainSystem.train_log_updated.connect(self.console_print_train_log)
-    TrainSystem.log_updated.connect(self.console_print_log)
-    print("PlayerSystem ", PlayerSystem)
-    PlayerSystem.error_received.connect(func(msg): self.console_print_log(TrainSystem.TrainLogLevel.TRAINLOGLEVEL_ERROR, msg))
+    Console.add_command("say", self.console_say, ["message"], 1, "Say message")
+
+    #TrainSystem.train_log_updated.connect(self.console_print_train_log)
+    LogSystem.log_updated.connect(self.console_print_log)
+    PlayerSystem.error_received.connect(func(msg): LogSystem.error(msg))
 
 
 func _parse_host_ip_from_address(address:String = ""):
@@ -34,10 +35,10 @@ func _parse_host_ip_from_address(address:String = ""):
     if address.is_empty():
         host = ProjectSettings.get_setting("maszyna/game/multiplayer/host", "127.0.0.1")
         if not host:
-            console_print_log(TrainSystem.TrainLogLevel.TRAINLOGLEVEL_WARNING, "Host is not configured in ProjectSetttings")
+            console_print_log(LogSystem.LogLevel.LOGLEVEL_WARNING, "Host is not configured in ProjectSetttings")
         port = int(ProjectSettings.get_setting("maszyna/game/multiplayer/port", 9797))
         if not port:
-            console_print_log(TrainSystem.TrainLogLevel.TRAINLOGLEVEL_WARNING, "Port is not configured in ProjectSetttings")
+            console_print_log(LogSystem.LogLevel.LOGLEVEL_WARNING, "Port is not configured in ProjectSetttings")
     else:
         var _parts = address.split(":")
         host = _parts[0].strip_edges()
@@ -46,7 +47,7 @@ func _parse_host_ip_from_address(address:String = ""):
             host = ProjectSettings.get_setting("maszyna/game/multiplayer/host", "127.0.0.1")
 
     if not port or not host:
-        console_print_log(TrainSystem.TrainLogLevel.TRAINLOGLEVEL_ERROR, "Incorrect address \"%s:%s\"" % [host, port])
+        console_print_log(LogSystem.LogLevel.LOGLEVEL_ERROR, "Incorrect address \"%s:%s\"" % [host, port])
         return [null, null]
 
     return [host, port]
@@ -58,6 +59,9 @@ func console_list_players():
                 Console.print_line("%s: %s [in %s]" % [player.peer_id, player.name, player.train_id])
             else:
                 Console.print_line("%s: %s" % [player.peer_id, player.name])
+
+func console_say(message: String):
+    PlayerSystem.send_message(message)
 
 func console_set_nick(nick:String):
     PlayerSystem.nick = nick
@@ -71,9 +75,9 @@ func console_host_server(address:String = ""):
     if host and port:
         var err = MultiPlayerManager.host_game(host_and_port[0], host_and_port[1])
         if err == OK:
-            Console.print_line("Server started at %s:%s" % [host, port])
+            LogSystem.info("Server started at %s:%s" % [host, port])
         else:
-            console_print_log(TrainSystem.TrainLogLevel.TRAINLOGLEVEL_ERROR, "Cannot host a game server (%s)" % err)
+            LogSystem.error("Cannot host a game server (%s)" % err)
 
 
 func console_connect_server(address:String = ""):
@@ -83,9 +87,9 @@ func console_connect_server(address:String = ""):
     if host and port:
         var err = MultiPlayerManager.connect_game(host, port)
         if err == OK:
-            Console.print_line("Connected to the server %s:%s" % [host, port])
+            LogSystem.info("Connected to the server %s:%s" % [host, port])
         else:
-            console_print_log(TrainSystem.TrainLogLevel.TRAINLOGLEVEL_ERROR, "Can't connect to server (%s)" % err)
+            LogSystem.error("Can't connect to server (%s)" % err)
 
 
 func console_get_config_value(train, property):
@@ -117,9 +121,9 @@ func console_print_train_log(train_id, loglevel, line):
     console_print_log(loglevel, "%s: %s" % [train_id, line])
 
 func console_print_log(loglevel, line):
-    if loglevel >= TrainSystem.TrainLogLevel.TRAINLOGLEVEL_ERROR:
+    if loglevel >= LogSystem.LogLevel.LOGLEVEL_ERROR:
         Console.print_line("[color=red]%s[/color]" % [line])
-    elif loglevel == TrainSystem.TrainLogLevel.TRAINLOGLEVEL_WARNING:
+    elif loglevel == LogSystem.LogLevel.LOGLEVEL_WARNING:
         Console.print_line("[color=orange]%s[/color]" % [line])
     else:
         Console.print_line("%s" % [line])
