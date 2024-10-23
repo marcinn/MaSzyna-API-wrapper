@@ -65,7 +65,7 @@ func console_say(message: String):
 
 func console_set_nick(nick:String):
     PlayerSystem.nick = nick
-    PlayerSystem.set_player_name.rpc(PlayerSystem.get_my_peer_id(), nick)
+    PlayerSystem.set_player_name(PlayerSystem.get_my_peer_id(), nick)
 
 func console_host_server(address:String = ""):
     var host_and_port = _parse_host_ip_from_address(address)

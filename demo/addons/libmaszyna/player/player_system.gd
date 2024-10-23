@@ -20,7 +20,6 @@ func _ready():
 
 
 func _error(msg):
-    push_error(msg)
     error_received.emit(msg)
 
 func _on_connected_to_server():
@@ -72,7 +71,7 @@ func register_player(peer_id:int, name:String = "", type=PlayerInfo.PlayerType.P
         return
 
     var p = PlayerInfo.new()
-    p.name = name
+    p.name = name if not name.is_empty() else "Player %d" % peer_id
     p.type = type
     p.peer_id = peer_id
 
@@ -93,10 +92,14 @@ func get_my_peer_id():
     return multiplayer.get_unique_id()
 
 
-@rpc("any_peer", "call_local")
 func set_player_name(peer_id:int, nick: String):
-    if _require_registered_player(peer_id):
-        _players[peer_id].name = nick
+    if not nick.is_empty() and _require_registered_player(peer_id):
+        receive_player_name.rpc(peer_id, nick)
+
+@rpc("any_peer", "call_local")
+func receive_player_name(peer_id:int, nick: String):
+    _players[peer_id].name = nick
+    LogSystem.warning("Player %d changed nick to %s" % [peer_id, nick])
 
 func get_player_name(peer_id:int):
     if _require_registered_player(peer_id):
