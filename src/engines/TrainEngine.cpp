@@ -11,6 +11,8 @@ namespace godot {
         ClassDB::bind_method(D_METHOD("set_motor_param_table"), &TrainEngine::set_motor_param_table);
         ClassDB::bind_method(D_METHOD("get_motor_param_table"), &TrainEngine::get_motor_param_table);
         ClassDB::bind_method(D_METHOD("main_switch", "enabled"), &TrainEngine::main_switch);
+        ClassDB::bind_method(
+                D_METHOD("_on_train_controller_state_changed"), &TrainEngine::_on_train_controller_state_changed);
         ADD_PROPERTY(
                 PropertyInfo(
                         Variant::ARRAY, "motor_param_table", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT,
@@ -45,7 +47,6 @@ namespace godot {
     }
 
     void TrainEngine::_do_fetch_state_from_mover(TMoverParameters *mover, Dictionary &state) {
-        bool previous_main_switch = static_cast<bool>(state.get("main_switch_enabled", false));
         state["main_switch_enabled"] = mover->Mains;
         state["Mm"] = mover->Mm;
         state["Mw"] = mover->Mw;
@@ -66,12 +67,6 @@ namespace godot {
         state["line_breaker_delay"] = mover->CtrlDelay;
         state["line_breaker_initial_delay"] = mover->InitialCtrlDelay;
         state["line_breaker_closes_at_no_power"] = mover->LineBreakerClosesOnlyAtNoPowerPos;
-
-        if (!previous_main_switch && (static_cast<bool>(state["main_switch_enabled"]))) {
-            emit_signal("engine_start");
-        } else if (previous_main_switch && !(static_cast<bool>(state["main_switch_enabled"]))) {
-            emit_signal("engine_stop");
-        }
     }
 
     void TrainEngine::_do_fetch_config_from_mover(TMoverParameters *mover, Dictionary &config) {
@@ -99,6 +94,23 @@ namespace godot {
 
     void TrainEngine::_unregister_commands() {
         unregister_command("main_switch", Callable(this, "main_switch"));
+    }
+
+    void TrainEngine::_do_initialize_train_controller(TrainController *train_controller) {
+        TrainPart::_do_initialize_train_controller(train_controller);
+        train_controller->connect(TrainController::STATE_CHANGED, Callable(this, "_on_train_controller_state_changed"));
+    }
+
+    void TrainEngine::_on_train_controller_state_changed() {
+        Dictionary state = train_controller_node->get_state();
+
+        if (!previous_main_switch && (static_cast<bool>(state["main_switch_enabled"]))) {
+            emit_signal("engine_start");
+        } else if (previous_main_switch && !(static_cast<bool>(state["main_switch_enabled"]))) {
+            emit_signal("engine_stop");
+        }
+
+        previous_main_switch = state["main_switch_enabled"];
     }
 
 } // namespace godot
