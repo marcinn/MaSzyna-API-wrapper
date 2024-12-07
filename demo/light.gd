@@ -1,8 +1,18 @@
 @tool
 extends Control
 
-@export_color_no_alpha var color_active = Color.GREEN
-@export_color_no_alpha var color_inactive = Color.BLACK
+@export_color_no_alpha var color_active = Color.GREEN:
+    set(x):
+        if not color_active == x:
+            color_active = x
+            _update_light()
+
+@export_color_no_alpha var color_inactive = Color.BLACK:
+    set(x):
+        if not color_inactive == x:
+            color_inactive = x
+            _update_light()
+
 @export var label:String = "":
     set(x):
         label = x

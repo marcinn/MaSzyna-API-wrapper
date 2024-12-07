@@ -80,6 +80,11 @@ func _process(delta: float) -> void:
         $%Reverse.modulate = Color.GREEN if train_state.get("direction", 0) < 0 else Color.WHITE
         $"%MainCtrlPos".text = str(train_state.get("controller_main_position", 0))
 
+        $"%LeftDoorsOpenLight".color_active = Color.ORANGE if train_state.get("doors/left/operating") else Color.LIME_GREEN
+        $"%LeftDoorsOpenLight".enabled = train_state.get("doors/left/open") or train_state.get("doors/left/operating")
+        $"%RightDoorsOpenLight".color_active = Color.ORANGE if train_state.get("doors/right/operating") else Color.LIME_GREEN
+        $"%RightDoorsOpenLight".enabled = train_state.get("doors/right/open") or train_state.get("doors/right/operating")
+
 func _on_brake_level_value_changed(value):
     TrainSystem.broadcast_command("brake_level_set", value, null)
 

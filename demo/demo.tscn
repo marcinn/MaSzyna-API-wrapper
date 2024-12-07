@@ -160,6 +160,21 @@ layout_mode = 2
 color_active = Color(0.90625, 0.488525, 0, 1)
 label = "Doors Locked"
 
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/Gauges/VBoxContainer"]
+layout_mode = 2
+
+[node name="LeftDoorsOpenLight" parent="UI/Gauges/VBoxContainer/HBoxContainer2" instance=ExtResource("5_pjaht")]
+unique_name_in_owner = true
+layout_mode = 2
+color_active = Color(0, 0.679688, 0.090271, 1)
+label = "Left Doors Open"
+
+[node name="RightDoorsOpenLight" parent="UI/Gauges/VBoxContainer/HBoxContainer2" instance=ExtResource("5_pjaht")]
+unique_name_in_owner = true
+layout_mode = 2
+color_active = Color(0, 0.679688, 0.090271, 1)
+label = "Right Doors Open"
+
 [node name="MoverSwitches" type="HBoxContainer" parent="UI"]
 layout_mode = 2
 size_flags_vertical = 3
