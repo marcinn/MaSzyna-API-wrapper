@@ -9,6 +9,12 @@ var _t:float = 0.0
 @onready var door1 = $SM42/TrainDoor
 
 
+const rich_print_loglevel_colors = {
+    TrainSystem.TRAINLOGLEVEL_DEBUG: "#777",
+    TrainSystem.TRAINLOGLEVEL_ERROR: "red",
+    TrainSystem.TRAINLOGLEVEL_WARNING: "orange",
+    }
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
     $%TrainName.text = "%s (type: %s)" % [train.name, train.type_name]
@@ -16,12 +22,19 @@ func _ready() -> void:
     TrainSystem.train_log_updated.connect(print_train_log_entry_to_godot_console)
 
 
+func _colorize_loglevel(loglevel, line):
+    var color = rich_print_loglevel_colors.get(loglevel)
+    if color:
+        return "[color=%s]%s[/color]" % [color, line]
+    else:
+        return line
+
 func print_log_entry_to_godot_console(loglevel, line):
-    print("LOG: [%s] %s" % [loglevel, line])
+    print_rich(_colorize_loglevel(loglevel, "LOG: [%s] %s" % [loglevel, line]))
 
 
 func print_train_log_entry_to_godot_console(train, loglevel, line):
-    print("LOG: [%s][%s] %s" % [train, loglevel, line])
+    print_rich(_colorize_loglevel(loglevel, "LOG: [%s][%s] %s" % [train, loglevel, line]))
 
 func draw_dictionary(dict: Dictionary, target: DebugPanel):
     var lines = []
@@ -54,12 +67,18 @@ func _process(delta: float) -> void:
         draw_dictionary(security_state, $%DebugSecurity)
         draw_dictionary(door_state, %DebugDoor)
 
-        $EngineRPM.value = engine_state.get("engine_rpm", 0.0) / 1400.0
-        $EngineCurrent.value = engine_state.get("engine_current", 0.0) / 1500.0
-        $OilPressure.value = engine_state.get("oil_pump_pressure", 0.0)
-        $BrakeCylinderPressure.value = brake_state.get("brake_air_pressure", 0.0) / brake_state.get("brake_tank_volume", 1.0)
-        $BrakePipePressure.value = brake_state.get("pipe_pressure", 0.0)  / 10.0
-
+        $UI/Gauges/EngineRPM.value = engine_state.get("engine_rpm", 0.0) / 1400.0
+        $UI/Gauges/EngineCurrent.value = engine_state.get("engine_current", 0.0) / 1500.0
+        $UI/Gauges/OilPressure.value = engine_state.get("oil_pump_pressure", 0.0)
+        $UI/Gauges/BrakeCylinderPressure.value = brake_state.get("brake_air_pressure", 0.0) / brake_state.get("brake_tank_volume", 1.0)
+        $UI/Gauges/BrakePipePressure.value = brake_state.get("pipe_pressure", 0.0)  / 10.0
+        $UI/Gauges/Speed.value = train_state.get("speed", 0.0) / 100.0
+        $%SecurityLight.enabled = true if train_state.get("blinking") else false
+        $%SHPLight.enabled = true if train_state.get("cabsignal_blinking") else false
+        $"%DoorsLocked".enabled = true if train_state.get("doors/locked") else false
+        $%Forward.modulate = Color.GREEN if train_state.get("direction", 0) > 0 else Color.WHITE
+        $%Reverse.modulate = Color.GREEN if train_state.get("direction", 0) < 0 else Color.WHITE
+        $"%MainCtrlPos".text = str(train_state.get("controller_main_position", 0))
 
 func _on_brake_level_value_changed(value):
     TrainSystem.broadcast_command("brake_level_set", value, null)

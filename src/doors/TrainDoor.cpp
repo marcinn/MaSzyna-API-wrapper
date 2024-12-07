@@ -218,6 +218,7 @@ namespace godot {
         const auto right_door = mover->Doors.instances[side::right];
 
         state["doors/locked"] = mover->Doors.is_locked;
+        state["doors/lock_enabled"] = mover->Doors.lock_enabled;
         state["doors/step_enabled"] = mover->Doors.step_enabled;
 
         state["doors/left/open"] = left_door.is_open;

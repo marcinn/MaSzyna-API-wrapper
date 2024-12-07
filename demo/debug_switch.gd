@@ -49,6 +49,8 @@ func _process(delta):
             $Switch.disabled = false
         else:
             $Switch.disabled = true
+        #if _controller and state_property:
+        #    $Switch.button_pressed = bool(int(_controller.state.get(state_property, false)))
 
     if not Engine.is_editor_hint():
         _t += delta
@@ -59,6 +61,7 @@ func _process(delta):
                     var value = _controller.state.get(state_property)
                     if not value == null:
                         $Switch.button_pressed = true if value else false
+                        $Switch.modulate = Color.GREEN if value else Color.WHITE
                 else:
                     $Switch.disabled = false
             else:
