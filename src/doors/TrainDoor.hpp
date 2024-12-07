@@ -36,6 +36,14 @@ namespace godot {
                 DOOR_CONTROLS_MIXED = control_t::mixed
             };
 
+            const std::unordered_map<DoorControls, Maszyna::control_t> DoorControlsMap = {
+                    {DoorControls::DOOR_CONTROLS_PASSENGER, control_t::passenger},
+                    {DoorControls::DOOR_CONTROLS_AUTOMATIC, control_t::autonomous},
+                    {DoorControls::DOOR_CONTROLS_DRIVER, control_t::driver},
+                    {DoorControls::DOOR_CONTROLS_CONDUCTOR, control_t::conductor},
+                    {DoorControls::DOOR_CONTROLS_MIXED, control_t::mixed},
+            };
+
             TrainDoor();
             ~TrainDoor() override = default;
 
@@ -66,8 +74,8 @@ namespace godot {
             float get_door_close_delay() const;
             void set_door_open_with_permit(float p_holding_time);
             float get_door_open_with_permit() const;
-            void set_door_blocked(bool p_blocked);
-            bool get_door_blocked() const;
+            void set_has_lock(bool p_blocked);
+            bool get_has_lock() const;
             void set_door_max_shift_plug(float p_max_shift_plug);
             float get_door_max_shift_plug() const;
             void set_door_permit_list(const Array &p_permit_list);
@@ -78,8 +86,6 @@ namespace godot {
             bool get_door_auto_close_remote() const;
             void set_door_auto_close_velocity(float p_vel);
             float get_door_auto_close_velocity() const;
-            void set_door_auto_close_enabled(bool p_enabled);
-            bool get_door_auto_close_enabled() const;
             void set_door_platform_max_speed(double p_max_speed);
             double get_door_platform_max_speed() const;
             void set_door_platform_max_shift(float p_max_shift);
@@ -101,9 +107,9 @@ namespace godot {
             void permit_doors(const DoorSide p_side, const bool p_state);
             void permit_left_doors(const bool p_state);
             void permit_right_doors(const bool p_state);
-            void operate_doors(const DoorSide p_side, const DoorState p_state);
-            void operate_left_doors(const DoorState p_state);
-            void operate_right_doors(const DoorState p_state);
+            void operate_doors(const DoorSide p_side, const bool p_state);
+            void operate_left_doors(const bool p_state);
+            void operate_right_doors(const bool p_state);
             void set_lock_doors(const bool p_state);
             void set_doors_remote_only(const bool p_state);
             void next_door_permit_preset();
@@ -177,9 +183,9 @@ namespace godot {
             float door_open_with_permit = 0.0;
 
             /**
-             * Is the door blocked. Default value from internal mover
+             * Is doors has lock.
              */
-            bool door_blocked = false;
+            bool has_lock = false;
 
             /**
              * The amount of rebound for Plug type doors (rebound-sliding), in meters. Default value from internal mover
@@ -202,11 +208,6 @@ namespace godot {
              * Automatic closing of centrally opened doors after time has elapsed
              */
             bool door_auto_close_remote = false;
-
-            /**
-             * Enable the velocity
-             */
-            bool door_auto_close_enabled = false;
 
             /**
              * The speed at which the door automatically closes. Default value from internal mover

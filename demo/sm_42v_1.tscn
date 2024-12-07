@@ -63,3 +63,17 @@ shp_magnet_distance = 3.0
 ca_max_hold_time = 1.0
 
 [node name="TrainDoor" type="TrainDoor" parent="."]
+type = 1
+open/time = 3.0
+max_shift = 3.0
+open/method = 2
+close/method = 2
+voltage = 2
+close/warning = true
+close/auto_close_warning = true
+open/delay = 0.5
+close/delay = 3.0
+has_lock = true
+max_shift_plug = 3.0
+platform/max_shift = 3.0
+permit/required = true

@@ -289,25 +289,25 @@ text = "Doors"
 layout_mode = 2
 label = "Open left doors"
 controller = NodePath("../../../../SM42")
-command = "doors_operate_left"
+command = "doors_left"
 
 [node name="RightDoorsOpen" parent="UI/MoverSwitches/Doors" instance=ExtResource("4_xvhus")]
 layout_mode = 2
 label = "Open right doors"
 controller = NodePath("../../../../SM42")
-command = "doors_operate_right"
+command = "doors_right"
 
 [node name="LeftDoorsPermit" parent="UI/MoverSwitches/Doors" instance=ExtResource("4_xvhus")]
 layout_mode = 2
 label = "Permit left doors"
 controller = NodePath("../../../../SM42")
-command = "doors_permit_left"
+command = "doors_left_permit"
 
 [node name="RightDoorsPermit" parent="UI/MoverSwitches/Doors" instance=ExtResource("4_xvhus")]
 layout_mode = 2
 label = "Permit right doors"
 controller = NodePath("../../../../SM42")
-command = "doors_permit_right"
+command = "doors_right_permit"
 
 [node name="DoorLock" parent="UI/MoverSwitches/Doors" instance=ExtResource("4_xvhus")]
 layout_mode = 2
@@ -324,9 +324,6 @@ enabled = false
 
 [node name="TrainDoor" parent="SM42" index="4"]
 type = 3
-open/method = 2
-close/method = 2
-voltage = 2
 
 [connection signal="button_up" from="UI/MoverSwitches/General/MainIncrease" to="." method="_on_main_increase_button_up"]
 [connection signal="button_up" from="UI/MoverSwitches/General/MainDecrease" to="." method="_on_main_decrease_button_up"]

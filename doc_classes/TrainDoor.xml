@@ -8,6 +8,74 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="next_door_permit_preset">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="operate_doors">
+			<return type="void" />
+			<param index="0" name="side" type="int" enum="TrainDoor.DoorSide" />
+			<param index="1" name="state" type="int" enum="TrainDoor.DoorState" />
+			<description>
+			</description>
+		</method>
+		<method name="operate_left_doors">
+			<return type="void" />
+			<param index="0" name="state" type="int" enum="TrainDoor.DoorState" />
+			<description>
+			</description>
+		</method>
+		<method name="operate_right_doors">
+			<return type="void" />
+			<param index="0" name="state" type="int" enum="TrainDoor.DoorState" />
+			<description>
+			</description>
+		</method>
+		<method name="permit_door_step">
+			<return type="void" />
+			<param index="0" name="state" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="permit_doors">
+			<return type="void" />
+			<param index="0" name="side" type="int" enum="TrainDoor.DoorSide" />
+			<param index="1" name="state" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="permit_left_doors">
+			<return type="void" />
+			<param index="0" name="state" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="permit_right_doors">
+			<return type="void" />
+			<param index="0" name="state" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="previous_door_permit_preset">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="set_doors_remote_only">
+			<return type="void" />
+			<param index="0" name="state" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="set_lock_doors">
+			<return type="void" />
+			<param index="0" name="state" type="bool" />
+			<description>
+			</description>
+		</method>
+	</methods>
 	<members>
 		<member name="auto_close/enabled" type="bool" setter="set_door_auto_close_enabled" getter="get_door_auto_close_enabled" default="false">
 			Enables auto closing doors after a certain period of time
@@ -15,16 +83,11 @@
 		<member name="auto_close/remote" type="bool" setter="set_door_auto_close_remote" getter="get_door_auto_close_remote" default="false">
 			Automatic closing of centrally open doors after a certain period of time
 		</member>
-		<member name="auto_close/velocity" type="float" setter="set_door_auto_close_velocity" getter="get_door_auto_close_velocity" default="0.0">
+		<member name="auto_close/velocity" type="float" setter="set_door_auto_close_velocity" getter="get_door_auto_close_velocity" default="-1.0">
 			The speed at which the automatic door closing occurs
 		</member>
 		<member name="auto_close/warning" type="bool" setter="set_auto_door_close_warning" getter="get_auto_door_close_warning" default="false">
 			When the door closing button is pressed, a buzz sound is activated automatically, and when released, the doors close
-		</member>
-		<member name="blocked" type="bool" setter="set_door_blocked" getter="get_door_blocked" default="false">
-			Returns boolean.
-			[code]true[/code] whether the door is blocked,
-			[code]false[/code] when it is not blocked
 		</member>
 		<member name="close/delay" type="float" setter="set_door_close_delay" getter="get_door_close_delay" default="0.0">
 			Door closing delay, in seconds
@@ -32,11 +95,15 @@
 		<member name="close/method" type="int" setter="set_door_close_method" getter="get_door_close_method" enum="TrainDoor.DoorControls" default="0">
 			Determines method of closing doors
 		</member>
-		<member name="close/speed" type="float" setter="set_close_speed" getter="get_close_speed" default="0.0">
+		<member name="close/speed" type="float" setter="set_close_speed" getter="get_close_speed" default="1.0">
 			Animation speed for closing doors
 		</member>
 		<member name="close/warning" type="bool" setter="set_door_close_warning" getter="get_door_close_warning" default="false">
 			Only a buzzer (used before closing the doors, like in EN57 EMUs)
+		</member>
+		<member name="has_lock" type="bool" setter="set_has_lock" getter="get_has_lock" default="false">
+			[code]Doors:DoorBlocked[/code]
+			Doors has locking mechanism
 		</member>
 		<member name="max_shift" type="float" setter="set_door_max_shift" getter="get_door_max_shift" default="0.0">
 			Width (or angle) of full door opening
@@ -56,16 +123,16 @@
 		<member name="open/method" type="int" setter="set_door_open_method" getter="get_door_open_method" enum="TrainDoor.DoorControls" default="0">
 			Determines method of opening doors
 		</member>
-		<member name="open/speed" type="float" setter="set_open_speed" getter="get_open_speed" default="0.0">
+		<member name="open/speed" type="float" setter="set_open_speed" getter="get_open_speed" default="1.0">
 			Animation speed for opening doors
 		</member>
-		<member name="open/time" type="float" setter="set_door_open_time" getter="get_door_open_time" default="0.0">
+		<member name="open/time" type="float" setter="set_door_open_time" getter="get_door_open_time" default="-1.0">
 			Time period for which door would stay opened
 		</member>
 		<member name="open/with_permit" type="float" setter="set_door_open_with_permit" getter="get_door_open_with_permit" default="0.0">
 			Opening the train doors by holding down the momentary open permission button for specified number of seconds
 		</member>
-		<member name="permit/default" type="int" setter="set_door_permit_list_default" getter="get_door_permit_list_default" default="1">
+		<member name="permit/default" type="int" setter="set_door_permit_list_default" getter="get_door_permit_list_default" default="-1">
 			By default, the position of the knob is set from the permit/list entry where the positions are numbered starting from 1
 		</member>
 		<member name="permit/light_blinking" type="int" setter="set_door_permit_light_blinking" getter="get_door_permit_light_blinking" default="0">
@@ -92,7 +159,7 @@
 		<member name="platform/open_method" type="int" setter="set_platform_open_method" getter="get_platform_open_method" default="0">
 			Type of animation of the platform
 		</member>
-		<member name="platform/speed" type="float" setter="set_door_platform_speed" getter="get_door_platform_speed" default="0.0">
+		<member name="platform/speed" type="float" setter="set_door_platform_speed" getter="get_door_platform_speed" default="0.5">
 			The speed of the animation platform, where 1.0 corresponds to an animation lasting one second, the value 0.5 corresponds to two seconds, etc
 		</member>
 		<member name="type" type="int" setter="set_door_type" getter="get_door_type" enum="TrainDoor.DoorType" default="2">

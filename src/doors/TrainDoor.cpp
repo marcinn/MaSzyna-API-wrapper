@@ -50,7 +50,7 @@ namespace godot {
                 &TrainDoor::set_auto_door_close_warning);
         ClassDB::bind_method(D_METHOD("get_auto_door_close_warning"), &TrainDoor::get_auto_door_close_warning);
         ADD_PROPERTY(
-                PropertyInfo(Variant::BOOL, "auto_close/warning"), "set_auto_door_close_warning",
+                PropertyInfo(Variant::BOOL, "close/auto_close_warning"), "set_auto_door_close_warning",
                 "get_auto_door_close_warning");
         ClassDB::bind_method(D_METHOD("set_door_open_delay", "door_open_delay"), &TrainDoor::set_door_open_delay);
         ClassDB::bind_method(D_METHOD("get_door_open_delay"), &TrainDoor::get_door_open_delay);
@@ -64,9 +64,9 @@ namespace godot {
         ADD_PROPERTY(
                 PropertyInfo(Variant::FLOAT, "open/with_permit"), "set_door_open_with_permit",
                 "get_door_open_with_permit");
-        ClassDB::bind_method(D_METHOD("set_door_blocked", "blocked"), &TrainDoor::set_door_blocked);
-        ClassDB::bind_method(D_METHOD("get_door_blocked"), &TrainDoor::get_door_blocked);
-        ADD_PROPERTY(PropertyInfo(Variant::BOOL, "blocked"), "set_door_blocked", "get_door_blocked");
+        ClassDB::bind_method(D_METHOD("set_has_lock", "lock"), &TrainDoor::set_has_lock);
+        ClassDB::bind_method(D_METHOD("get_has_lock"), &TrainDoor::get_has_lock);
+        ADD_PROPERTY(PropertyInfo(Variant::BOOL, "has_lock"), "set_has_lock", "get_has_lock");
         ClassDB::bind_method(
                 D_METHOD("set_door_max_shift_plug", "door_max_shift_plug"), &TrainDoor::set_door_max_shift_plug);
         ClassDB::bind_method(D_METHOD("get_door_max_shift_plug"), &TrainDoor::get_door_max_shift_plug);
@@ -88,21 +88,15 @@ namespace godot {
                 D_METHOD("set_door_auto_close_remote", "auto_close_remote"), &TrainDoor::set_door_auto_close_remote);
         ClassDB::bind_method(D_METHOD("get_door_auto_close_remote"), &TrainDoor::get_door_auto_close_remote);
         ADD_PROPERTY(
-                PropertyInfo(Variant::BOOL, "auto_close/remote"), "set_door_auto_close_remote",
+                PropertyInfo(Variant::BOOL, "close/auto_close_remote"), "set_door_auto_close_remote",
                 "get_door_auto_close_remote");
         ClassDB::bind_method(
                 D_METHOD("set_door_auto_close_velocity", "auto_close_velocity"),
                 &TrainDoor::set_door_auto_close_velocity);
         ClassDB::bind_method(D_METHOD("get_door_auto_close_velocity"), &TrainDoor::get_door_auto_close_velocity);
         ADD_PROPERTY(
-                PropertyInfo(Variant::FLOAT, "auto_close/velocity"), "set_door_auto_close_velocity",
+                PropertyInfo(Variant::FLOAT, "close/auto_close_velocity"), "set_door_auto_close_velocity",
                 "get_door_auto_close_velocity");
-        ClassDB::bind_method(
-                D_METHOD("set_door_auto_close_enabled", "auto_close_enabled"), &TrainDoor::set_door_auto_close_enabled);
-        ClassDB::bind_method(D_METHOD("get_door_auto_close_enabled"), &TrainDoor::get_door_auto_close_enabled);
-        ADD_PROPERTY(
-                PropertyInfo(Variant::BOOL, "auto_close/enabled"), "set_door_auto_close_enabled",
-                "get_door_auto_close_enabled");
         ClassDB::bind_method(
                 D_METHOD("set_door_platform_max_speed", "platform_max_speed"), &TrainDoor::set_door_platform_max_speed);
         ClassDB::bind_method(D_METHOD("get_door_platform_max_speed"), &TrainDoor::get_door_platform_max_speed);
@@ -199,10 +193,10 @@ namespace godot {
         register_command("doors_next_permit_preset", Callable(this, "next_door_permit_preset"));
         register_command("doors_previous_permit_preset", Callable(this, "previous_door_permit_preset"));
         register_command("doors_permit_step", Callable(this, "permit_door_step"));
-        register_command("doors_permit_left", Callable(this, "permit_left_doors"));
-        register_command("doors_permit_right", Callable(this, "permit_right_doors"));
-        register_command("doors_operate_left", Callable(this, "operate_left_doors"));
-        register_command("doors_operate_right", Callable(this, "operate_right_doors"));
+        register_command("doors_left_permit", Callable(this, "permit_left_doors"));
+        register_command("doors_right_permit", Callable(this, "permit_right_doors"));
+        register_command("doors_left", Callable(this, "operate_left_doors"));
+        register_command("doors_right", Callable(this, "operate_right_doors"));
         register_command("doors_lock", Callable(this, "set_lock_doors"));
         register_command("doors_remote_only", Callable(this, "set_doors_remote_only"));
     }
@@ -211,10 +205,10 @@ namespace godot {
         unregister_command("doors_next_permit_preset", Callable(this, "next_door_permit_preset"));
         unregister_command("doors_previous_permit_preset", Callable(this, "previous_door_permit_preset"));
         unregister_command("doors_permit_step", Callable(this, "permit_door_step"));
-        unregister_command("doors_permit_left", Callable(this, "permit_left_doors"));
-        unregister_command("doors_permit_right", Callable(this, "permit_right_doors"));
-        unregister_command("doors_operate_left", Callable(this, "operate_left_doors"));
-        unregister_command("doors_operate_right", Callable(this, "operate_right_doors"));
+        unregister_command("doors_left_permit", Callable(this, "permit_left_doors"));
+        unregister_command("doors_right_permit", Callable(this, "permit_right_doors"));
+        unregister_command("doors_left", Callable(this, "operate_left_doors"));
+        unregister_command("doors_right", Callable(this, "operate_right_doors"));
         unregister_command("doors_lock", Callable(this, "set_lock_doors"));
         unregister_command("doors_remote_only", Callable(this, "set_doors_remote_only"));
     }
@@ -230,7 +224,6 @@ namespace godot {
         state["doors/left/open_permit"] = left_door.open_permit;
         state["doors/left/local_open"] = left_door.local_open;
         state["doors/left/remote_open"] = left_door.remote_open;
-        state["doors/left/remote_close"] = left_door.remote_close;
         state["doors/left/position"] = left_door.position;
         state["doors/left/operating"] = left_door.is_closing || left_door.is_opening;
         state["doors/left/step_position"] = left_door.step_position;
@@ -240,7 +233,6 @@ namespace godot {
         state["doors/right/open_permit"] = right_door.open_permit;
         state["doors/right/local_open"] = right_door.local_open;
         state["doors/right/remote_open"] = right_door.remote_open;
-        state["doors/right/remote_close"] = right_door.remote_close;
         state["doors/right/position"] = right_door.position;
         state["doors/right/operating"] = right_door.is_opening | right_door.is_closing;
         state["doors/right/step_position"] = right_door.step_position;
@@ -283,26 +275,26 @@ namespace godot {
         this->permit_doors(DoorSide::DOOR_SIDE_RIGHT, p_state);
     }
 
-    void TrainDoor::operate_doors(const DoorSide p_side, const DoorState p_state) {
+    void TrainDoor::operate_doors(const DoorSide p_side, const bool p_state) {
         TMoverParameters *mover = get_mover();
         ASSERT_MOVER(mover);
-        mover->OperateDoors(
-                p_side == DoorSide::DOOR_SIDE_LEFT ? side::left : side::right,
-                p_state == DoorState::DOOR_STATE_OPEN ? true : false, range_t::local);
+        mover->OperateDoors(p_side == DoorSide::DOOR_SIDE_LEFT ? side::left : side::right,
+                            p_state); // range_t::local);
+        // FIXME: range_t::local does not emit signal to train cars
     }
 
-    void TrainDoor::operate_left_doors(const DoorState p_state) {
+    void TrainDoor::operate_left_doors(const bool p_state) {
         this->operate_doors(DoorSide::DOOR_SIDE_LEFT, p_state);
     }
 
-    void TrainDoor::operate_right_doors(const DoorState p_state) {
+    void TrainDoor::operate_right_doors(const bool p_state) {
         this->operate_doors(DoorSide::DOOR_SIDE_RIGHT, p_state);
     }
 
     void TrainDoor::set_lock_doors(const bool p_state) {
         TMoverParameters *mover = get_mover();
         ASSERT_MOVER(mover);
-        mover->LockDoors(p_state);
+        mover->LockDoors(p_state); //, range_t::local); // FIXME: range_t::local does not emit signal to train cars
     }
 
     void TrainDoor::set_doors_remote_only(const bool p_state) {
@@ -312,10 +304,22 @@ namespace godot {
     }
 
     void TrainDoor::_do_update_internal_mover(TMoverParameters *mover) {
-        mover->Doors.open_control = static_cast<control_t>(door_open_method);
-        mover->Doors.close_control = static_cast<control_t>(door_close_method);
+        auto it1 = DoorControlsMap.find(door_open_method);
+        if (it1 != DoorControlsMap.end()) {
+            mover->Doors.open_control = it1->second;
+        } else {
+            log_error("Unhandled door open controls position: " + String::num(static_cast<int>(door_open_method)));
+        }
+
+        auto it2 = DoorControlsMap.find(door_close_method);
+        if (it2 != DoorControlsMap.end()) {
+            mover->Doors.close_control = it2->second;
+        } else {
+            log_error("Unhandled door close controls position: " + String::num(static_cast<int>(door_close_method)));
+        }
+
         mover->Doors.auto_duration = door_open_time;
-        mover->Doors.auto_velocity = door_auto_close_enabled ? door_auto_close_velocity : -1.0f;
+        mover->Doors.auto_velocity = door_auto_close_velocity;
         mover->Doors.auto_include_remote = door_auto_close_remote;
         mover->Doors.permit_needed = door_permit_required;
         mover->Doors.permit_presets.clear();
@@ -341,7 +345,7 @@ namespace godot {
         mover->Doors.type = door_type;
         mover->Doors.has_warning = door_close_warning;
         mover->Doors.has_autowarning = auto_door_close_warning;
-        mover->Doors.has_lock = door_blocked;
+        mover->Doors.has_lock = has_lock;
         bool const remote_door_control{
                 mover->Doors.open_control == control_t::driver || mover->Doors.open_control == control_t::conductor ||
                 mover->Doors.open_control == control_t::mixed};
@@ -476,13 +480,13 @@ namespace godot {
         return door_open_with_permit;
     }
 
-    void TrainDoor::set_door_blocked(const bool p_blocked) {
-        door_blocked = p_blocked;
+    void TrainDoor::set_has_lock(const bool p_lock) {
+        has_lock = p_lock;
         _dirty = true;
     }
 
-    bool TrainDoor::get_door_blocked() const {
-        return door_blocked;
+    bool TrainDoor::get_has_lock() const {
+        return has_lock;
     }
 
     void TrainDoor::set_door_max_shift_plug(const float p_max_shift_plug) {
@@ -528,15 +532,6 @@ namespace godot {
 
     float TrainDoor::get_door_auto_close_velocity() const {
         return door_auto_close_velocity;
-    }
-
-    void TrainDoor::set_door_auto_close_enabled(const bool p_enabled) {
-        door_auto_close_enabled = p_enabled;
-        _dirty = true;
-    }
-
-    bool TrainDoor::get_door_auto_close_enabled() const {
-        return door_auto_close_enabled;
     }
 
     void TrainDoor::set_door_platform_max_speed(const double p_max_speed) {
