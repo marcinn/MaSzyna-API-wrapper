@@ -288,35 +288,30 @@ text = "Doors"
 [node name="LeftDoorsOpen" parent="UI/MoverSwitches/Doors" instance=ExtResource("4_xvhus")]
 layout_mode = 2
 label = "Open left doors"
-type = 1
 controller = NodePath("../../../../SM42")
 command = "doors_operate_left"
 
 [node name="RightDoorsOpen" parent="UI/MoverSwitches/Doors" instance=ExtResource("4_xvhus")]
 layout_mode = 2
 label = "Open right doors"
-type = 1
 controller = NodePath("../../../../SM42")
 command = "doors_operate_right"
 
 [node name="LeftDoorsPermit" parent="UI/MoverSwitches/Doors" instance=ExtResource("4_xvhus")]
 layout_mode = 2
 label = "Permit left doors"
-type = 1
 controller = NodePath("../../../../SM42")
 command = "doors_permit_left"
 
 [node name="RightDoorsPermit" parent="UI/MoverSwitches/Doors" instance=ExtResource("4_xvhus")]
 layout_mode = 2
 label = "Permit right doors"
-type = 1
 controller = NodePath("../../../../SM42")
 command = "doors_permit_right"
 
 [node name="DoorLock" parent="UI/MoverSwitches/Doors" instance=ExtResource("4_xvhus")]
 layout_mode = 2
 label = "Lock doors"
-type = 1
 controller = NodePath("../../../../SM42")
 state_property = "doors/locked"
 command = "doors_lock"

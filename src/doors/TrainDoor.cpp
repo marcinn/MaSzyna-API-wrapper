@@ -223,45 +223,28 @@ namespace godot {
         const auto left_door = mover->Doors.instances[side::left];
         const auto right_door = mover->Doors.instances[side::right];
 
-        state["doors/has_warning"] = mover->Doors.has_warning;
-        state["doors/has_auto_warning"] = mover->Doors.has_autowarning;
-        state["doors/has_lock"] = mover->Doors.has_lock;
         state["doors/locked"] = mover->Doors.is_locked;
-        state["doors/voltage"] = mover->Doors.voltage;
-        state["doors/step_rate"] = mover->Doors.step_rate;
-        state["doors/step_range"] = mover->Doors.step_range;
-        state["doors/step_type"] = mover->Doors.step_type;
         state["doors/step_enabled"] = mover->Doors.step_enabled;
-        state["doors/open_with_permit_after"] = mover->DoorsOpenWithPermitAfter;
-        state["doors/permit_light_blinking"] = mover->DoorsPermitLightBlinking;
 
+        state["doors/left/open"] = left_door.is_open;
         state["doors/left/open_permit"] = left_door.open_permit;
         state["doors/left/local_open"] = left_door.local_open;
-        state["doors/left/local_close"] = left_door.local_close;
         state["doors/left/remote_open"] = left_door.remote_open;
         state["doors/left/remote_close"] = left_door.remote_close;
-        state["doors/left/close_delay"] = left_door.close_delay;
-        state["doors/left/open_delay"] = left_door.open_delay;
         state["doors/left/position"] = left_door.position;
-        state["doors/left/opened"] = left_door.is_open;
         state["doors/left/operating"] = left_door.is_closing || left_door.is_opening;
         state["doors/left/step_position"] = left_door.step_position;
-        state["doors/left/step_unfolding"] = left_door.step_unfolding;
-        state["doors/left/step_folding"] = left_door.step_folding;
+        state["doors/left/step_operating"] = left_door.step_folding || left_door.step_unfolding;
 
+        state["doors/right/open"] = right_door.is_open;
         state["doors/right/open_permit"] = right_door.open_permit;
         state["doors/right/local_open"] = right_door.local_open;
-        state["doors/right/local_close"] = right_door.local_close;
         state["doors/right/remote_open"] = right_door.remote_open;
         state["doors/right/remote_close"] = right_door.remote_close;
-        state["doors/right/close_delay"] = right_door.close_delay;
-        state["doors/right/open_delay"] = right_door.open_delay;
         state["doors/right/position"] = right_door.position;
-        state["doors/right/opened"] = right_door.is_open;
         state["doors/right/operating"] = right_door.is_opening | right_door.is_closing;
         state["doors/right/step_position"] = right_door.step_position;
-        state["doors/right/step_unfolding"] = right_door.step_unfolding;
-        state["doors/right/step_folding"] = right_door.step_folding;
+        state["doors/right/step_operating"] = right_door.step_folding || right_door.step_unfolding;
     }
 
     void TrainDoor::_do_process_mover(TMoverParameters *mover, double delta) {
@@ -305,7 +288,7 @@ namespace godot {
         ASSERT_MOVER(mover);
         mover->OperateDoors(
                 p_side == DoorSide::DOOR_SIDE_LEFT ? side::left : side::right,
-                p_state == DoorState::DOOR_STATE_OPEN ? true : false);
+                p_state == DoorState::DOOR_STATE_OPEN ? true : false, range_t::local);
     }
 
     void TrainDoor::operate_left_doors(const DoorState p_state) {
