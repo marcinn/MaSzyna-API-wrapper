@@ -61,3 +61,5 @@ emergency_brake_delay = 2.5
 sound_signal_delay = 2.5
 shp_magnet_distance = 3.0
 ca_max_hold_time = 1.0
+
+[node name="TrainDoor" type="TrainDoor" parent="."]

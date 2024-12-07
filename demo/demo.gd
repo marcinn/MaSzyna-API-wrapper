@@ -6,6 +6,7 @@ var _t:float = 0.0
 @onready var brake = $SM42/Brake
 @onready var engine = $SM42/StonkaDieselEngine
 @onready var security = $SM42/TrainSecuritySystem
+@onready var door1 = $SM42/TrainDoor
 
 
 # Called when the node enters the scene tree for the first time.
@@ -36,11 +37,13 @@ func _process(delta: float) -> void:
         var security_state = security.get_mover_state()
         var brake_state = brake.get_mover_state()
         var engine_state = engine.get_mover_state()
-
+        var door_state = door1.get_mover_state()
+        
         draw_dictionary(engine_state, $%DebugEngine)
         draw_dictionary(train_state, $%DebugTrain)
         draw_dictionary(brake_state, $%DebugBrake)
         draw_dictionary(security_state, $%DebugSecurity)
+        draw_dictionary(door_state, %DebugDoor)
 
         $EngineRPM.value = engine_state.get("engine_rpm", 0.0) / 1400.0
         $EngineCurrent.value = engine_state.get("engine_current", 0.0) / 1500.0
