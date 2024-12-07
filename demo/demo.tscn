@@ -278,9 +278,6 @@ type = 1
 controller = NodePath("../../../../../SM42")
 command = "brake_releaser"
 
-[node name="SM42" parent="." instance=ExtResource("2_t8uqe")]
-train_id = "sm42"
-
 [node name="Doors" type="HFlowContainer" parent="UI/MoverSwitches"]
 layout_mode = 2
 
@@ -291,37 +288,46 @@ text = "Doors"
 [node name="LeftDoorsOpen" parent="UI/MoverSwitches/Doors" instance=ExtResource("4_xvhus")]
 layout_mode = 2
 label = "Open left doors"
-controller = NodePath("../../../../SM42_V1")
-command = "doors_left_toggle"
+type = 1
+controller = NodePath("../../../../SM42")
+command = "doors_operate_left"
 
 [node name="RightDoorsOpen" parent="UI/MoverSwitches/Doors" instance=ExtResource("4_xvhus")]
 layout_mode = 2
 label = "Open right doors"
-controller = NodePath("../../../../SM42_V1")
-command = "doors_right_toggle"
+type = 1
+controller = NodePath("../../../../SM42")
+command = "doors_operate_right"
 
 [node name="LeftDoorsPermit" parent="UI/MoverSwitches/Doors" instance=ExtResource("4_xvhus")]
 layout_mode = 2
 label = "Permit left doors"
-controller = NodePath("../../../../SM42_V1")
-command = "doors_left_permit_toggle"
+type = 1
+controller = NodePath("../../../../SM42")
+command = "doors_permit_left"
 
 [node name="RightDoorsPermit" parent="UI/MoverSwitches/Doors" instance=ExtResource("4_xvhus")]
 layout_mode = 2
 label = "Permit right doors"
-controller = NodePath("../../../../SM42_V1")
-command = "doors_right_permit_toggle"
+type = 1
+controller = NodePath("../../../../SM42")
+command = "doors_permit_right"
 
 [node name="DoorLock" parent="UI/MoverSwitches/Doors" instance=ExtResource("4_xvhus")]
 layout_mode = 2
 label = "Lock doors"
-controller = NodePath("../../../../SM42_V1")
-command = "doors_lock_toggle"
+type = 1
+controller = NodePath("../../../../SM42")
+state_property = "doors/locked"
+command = "doors_lock"
+
+[node name="SM42" parent="." instance=ExtResource("2_t8uqe")]
+train_id = "sm42"
 
 [node name="TestowySilnikElektryczny" parent="SM42" index="1"]
 enabled = false
 
-[node name="TrainDoor" parent="SM42" index="5"]
+[node name="TrainDoor" parent="SM42" index="4"]
 type = 3
 open/method = 2
 close/method = 2

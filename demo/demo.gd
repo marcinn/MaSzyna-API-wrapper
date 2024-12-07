@@ -38,7 +38,7 @@ func _process(delta: float) -> void:
         var brake_state = brake.get_mover_state()
         var engine_state = engine.get_mover_state()
         var door_state = door1.get_mover_state()
-        
+
         draw_dictionary(engine_state, $%DebugEngine)
         draw_dictionary(train_state, $%DebugTrain)
         draw_dictionary(brake_state, $%DebugBrake)

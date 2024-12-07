@@ -10,6 +10,8 @@ namespace godot {
             void _do_update_internal_mover(TMoverParameters *mover) override;
             void _do_fetch_state_from_mover(TMoverParameters *mover, Dictionary &state) override;
             void _do_process_mover(TMoverParameters *mover, double delta) override;
+            void _register_commands() override;
+            void _unregister_commands() override;
 
         public:
             enum PermitLights {
@@ -19,13 +21,12 @@ namespace godot {
                 PERMIT_LIGHT_FLASHING_ALWAYS
             };
 
-            enum PlatformAnimationType { PLATFORM_ANIMATION_TYPE_SHIFT, PLATFORM_ANIMATION_TYPE_ROTATE };
-
             enum DoorSide { DOOR_SIDE_RIGHT, DOOR_SIDE_LEFT };
-
             enum DoorState { DOOR_STATE_CLOSE, DOOR_STATE_OPEN };
-
+            enum DoorVoltage { DOOR_VOLTAGE_0 = 0, DOOR_VOLTAGE_12 = 12, DOOR_VOLTAGE_24 = 24, DOOR_VOLTAGE_112 = 112 };
+            enum DoorType { DOOR_TYPE_SHIFT = 1, DOOR_TYPE_ROTATE = 2, DOOR_TYPE_FOLD = 3, DOOR_TYPE_PLUG = 4 };
             enum NotificationRange { NOTIFICATION_RANGE_LOCAL, NOTIFICATION_RANGE_UNIT, NOTIFICATION_RANGE_CONSIST };
+            enum PlatformAnimationType { PLATFORM_ANIMATION_TYPE_SHIFT, PLATFORM_ANIMATION_TYPE_ROTATE };
 
             enum DoorControls {
                 DOOR_CONTROLS_PASSENGER = control_t::passenger,
@@ -35,12 +36,10 @@ namespace godot {
                 DOOR_CONTROLS_MIXED = control_t::mixed
             };
 
-            enum DoorVoltage { DOOR_VOLTAGE_0 = 0, DOOR_VOLTAGE_12 = 12, DOOR_VOLTAGE_24 = 24, DOOR_VOLTAGE_112 = 112 };
-
-            enum DoorType { DOOR_TYPE_SHIFT = 1, DOOR_TYPE_ROTATE = 2, DOOR_TYPE_FOLD = 3, DOOR_TYPE_PLUG = 4 };
+            TrainDoor();
+            ~TrainDoor() override = default;
 
             static void _bind_methods();
-            void _on_command_received(const String &command, const Variant &p1, const Variant &p2) override;
             void set_door_type(DoorType p_door_type);
             DoorType get_door_type() const;
             void set_door_open_time(float p_value);
@@ -98,6 +97,19 @@ namespace godot {
             void set_door_permit_light_blinking(PermitLights p_blinking_mode);
             int get_door_permit_light_blinking() const;
 
+            void permit_door_step(const bool p_state);
+            void permit_doors(const DoorSide p_side, const bool p_state);
+            void permit_left_doors(const bool p_state);
+            void permit_right_doors(const bool p_state);
+            void operate_doors(const DoorSide p_side, const DoorState p_state);
+            void operate_left_doors(const DoorState p_state);
+            void operate_right_doors(const DoorState p_state);
+            void set_lock_doors(const bool p_state);
+            void set_doors_remote_only(const bool p_state);
+            void next_door_permit_preset();
+            void previous_door_permit_preset();
+
+        private:
             /**
              * Type of the door. Default value from internal mover
              *
@@ -144,7 +156,8 @@ namespace godot {
             bool door_close_warning = false;
 
             /**
-             * When you press the door closing button, a buzzer is activated, when you release it, the door closes. Default value from internal mover
+             * When you press the door closing button, a buzzer is activated, when you release it, the door closes.
+             * Default value from internal mover
              */
             bool auto_door_close_warning = false;
 
@@ -251,8 +264,6 @@ namespace godot {
              * anyways
              */
             NotificationRange notification_range = NotificationRange::NOTIFICATION_RANGE_UNIT;
-            TrainDoor();
-            ~TrainDoor() override = default;
     };
 } // namespace godot
 
