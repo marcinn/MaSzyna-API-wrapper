@@ -1,7 +1,11 @@
 .PHONY=runserver
 
-vendor/bundle:
+install:
 	bundle install
 
-runserver: vendor/bundle
+vendor/bundle: install
+
+Gemfile: vendor/bundle install
+
+runserver: Gemfile
 	bundle exec jekyll serve --livereload --baseurl "/MaSzyna-API-wrapper"
