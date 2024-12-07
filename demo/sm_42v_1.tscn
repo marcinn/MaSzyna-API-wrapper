@@ -75,5 +75,6 @@ open/delay = 0.5
 close/delay = 3.0
 has_lock = true
 max_shift_plug = 3.0
+close/auto_close_remote = true
 platform/max_shift = 3.0
 permit/required = true

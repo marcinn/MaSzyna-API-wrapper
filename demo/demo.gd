@@ -12,7 +12,16 @@ var _t:float = 0.0
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
     $%TrainName.text = "%s (type: %s)" % [train.name, train.type_name]
+    TrainSystem.log_updated.connect(print_log_entry_to_godot_console)
+    TrainSystem.train_log_updated.connect(print_train_log_entry_to_godot_console)
 
+
+func print_log_entry_to_godot_console(loglevel, line):
+    print("LOG: [%s] %s" % [loglevel, line])
+
+
+func print_train_log_entry_to_godot_console(train, loglevel, line):
+    print("LOG: [%s][%s] %s" % [train, loglevel, line])
 
 func draw_dictionary(dict: Dictionary, target: DebugPanel):
     var lines = []

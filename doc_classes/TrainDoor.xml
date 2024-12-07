@@ -77,25 +77,24 @@
 		</method>
 	</methods>
 	<members>
-		<member name="auto_close/enabled" type="bool" setter="set_door_auto_close_enabled" getter="get_door_auto_close_enabled" default="false">
-			Enables auto closing doors after a certain period of time
-		</member>
-		<member name="auto_close/remote" type="bool" setter="set_door_auto_close_remote" getter="get_door_auto_close_remote" default="false">
+		<member name="close/auto_close_remote" type="bool" setter="set_door_auto_close_remote" getter="get_door_auto_close_remote" default="false">
 			Automatic closing of centrally open doors after a certain period of time
 		</member>
-		<member name="auto_close/velocity" type="float" setter="set_door_auto_close_velocity" getter="get_door_auto_close_velocity" default="-1.0">
+		<member name="close/auto_close_velocity" type="float" setter="set_door_auto_close_velocity" getter="get_door_auto_close_velocity" default="-1.0">
 			The speed at which the automatic door closing occurs
 		</member>
-		<member name="auto_close/warning" type="bool" setter="set_auto_door_close_warning" getter="get_auto_door_close_warning" default="false">
+		<member name="close/auto_close_warning" type="bool" setter="set_auto_door_close_warning" getter="get_auto_door_close_warning" default="false">
 			When the door closing button is pressed, a buzz sound is activated automatically, and when released, the doors close
 		</member>
 		<member name="close/delay" type="float" setter="set_door_close_delay" getter="get_door_close_delay" default="0.0">
 			Door closing delay, in seconds
 		</member>
 		<member name="close/method" type="int" setter="set_door_close_method" getter="get_door_close_method" enum="TrainDoor.DoorControls" default="0">
+			[code]Doors:CloseCtrl[/code]
 			Determines method of closing doors
 		</member>
 		<member name="close/speed" type="float" setter="set_close_speed" getter="get_close_speed" default="1.0">
+			[code]Doors:CloseSpeed[/code]
 			Animation speed for closing doors
 		</member>
 		<member name="close/warning" type="bool" setter="set_door_close_warning" getter="get_door_close_warning" default="false">
@@ -121,12 +120,15 @@
 			Door opening delay, in seconds
 		</member>
 		<member name="open/method" type="int" setter="set_door_open_method" getter="get_door_open_method" enum="TrainDoor.DoorControls" default="0">
+			[code]Doors:OpenCtrl[/code]
 			Determines method of opening doors
 		</member>
 		<member name="open/speed" type="float" setter="set_open_speed" getter="get_open_speed" default="1.0">
+			[code]Doors:OpenSpeed[/code]
 			Animation speed for opening doors
 		</member>
 		<member name="open/time" type="float" setter="set_door_open_time" getter="get_door_open_time" default="-1.0">
+			[code]Doors:DoorStayOpen[/code]
 			Time period for which door would stay opened
 		</member>
 		<member name="open/with_permit" type="float" setter="set_door_open_with_permit" getter="get_door_open_with_permit" default="0.0">
@@ -163,9 +165,11 @@
 			The speed of the animation platform, where 1.0 corresponds to an animation lasting one second, the value 0.5 corresponds to two seconds, etc
 		</member>
 		<member name="type" type="int" setter="set_door_type" getter="get_door_type" enum="TrainDoor.DoorType" default="2">
+			[code]Doors:DoorOpenMethod[/code]
 			Type of doors
 		</member>
 		<member name="voltage" type="int" setter="set_door_voltage" getter="get_door_voltage" enum="TrainDoor.DoorVoltage" default="0">
+			[code]Doors:DoorVoltage[/code]
 			Voltage of low-voltage circuit required to control doors
 		</member>
 	</members>
