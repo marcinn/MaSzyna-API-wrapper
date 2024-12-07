@@ -225,6 +225,7 @@ namespace godot {
         state["doors/left/local_open"] = left_door.local_open;
         state["doors/left/remote_open"] = left_door.remote_open;
         state["doors/left/position"] = left_door.position;
+        state["doors/left/position_normalized"] = left_door.position / door_max_shift;
         state["doors/left/operating"] = left_door.is_closing || left_door.is_opening;
         state["doors/left/step_position"] = left_door.step_position;
         state["doors/left/step_operating"] = left_door.step_folding || left_door.step_unfolding;
@@ -234,6 +235,7 @@ namespace godot {
         state["doors/right/local_open"] = right_door.local_open;
         state["doors/right/remote_open"] = right_door.remote_open;
         state["doors/right/position"] = right_door.position;
+        state["doors/right/position_normalized"] = right_door.position / door_max_shift;
         state["doors/right/operating"] = right_door.is_opening | right_door.is_closing;
         state["doors/right/step_position"] = right_door.step_position;
         state["doors/right/step_operating"] = right_door.step_folding || right_door.step_unfolding;
