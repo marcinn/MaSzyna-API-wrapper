@@ -77,4 +77,4 @@ Our focus:
 ## Authors
 
 - **[Marcin Nowak](https://github.com/marcinn/)**: Software architecture and programming
-- **[Karol "JezSonic" Tomaszewski](https://github.com/JezSonic)**: Game port concept, CI and programming
+- **[Karol "DoS" Tomaszewski](https://github.com/JezSonic)**: Game port concept, CI and programming
