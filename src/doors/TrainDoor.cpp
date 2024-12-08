@@ -26,21 +26,19 @@ namespace godot {
         ClassDB::bind_method(D_METHOD("get_door_open_method"), &TrainDoor::get_door_open_method);
         ADD_PROPERTY(
                 PropertyInfo(
-                        Variant::INT, "open/method", PROPERTY_HINT_ENUM,
-                        "Passenger,AutomaticCtrl,DriverCtrl,Conductor,Mixed"),
+                        Variant::INT, "open/method", PROPERTY_HINT_ENUM, "Passenger,Automatic,Driver,Conductor,Mixed"),
                 "set_door_open_method", "get_door_open_method");
         ClassDB::bind_method(D_METHOD("set_door_close_method", "door_close_method"), &TrainDoor::set_door_close_method);
         ClassDB::bind_method(D_METHOD("get_door_close_method"), &TrainDoor::get_door_close_method);
         ADD_PROPERTY(
                 PropertyInfo(
-                        Variant::INT, "close/method", PROPERTY_HINT_ENUM,
-                        "Passenger,AutomaticCtrl,DriverCtrl,Conductor,Mixed"),
+                        Variant::INT, "close/method", PROPERTY_HINT_ENUM, "Passenger,Automatic,Driver,Conductor,Mixed"),
                 "set_door_close_method", "get_door_close_method");
         ClassDB::bind_method(D_METHOD("set_door_voltage", "door_voltage"), &TrainDoor::set_door_voltage);
         ClassDB::bind_method(D_METHOD("get_door_voltage"), &TrainDoor::get_door_voltage);
         ADD_PROPERTY(
-                PropertyInfo(Variant::INT, "voltage", PROPERTY_HINT_ENUM, "0V,12V,24V,112V"), "set_door_voltage",
-                "get_door_voltage");
+                PropertyInfo(Variant::INT, "voltage", PROPERTY_HINT_ENUM, "Automatic,0V,12V,24V,112V"),
+                "set_door_voltage", "get_door_voltage");
         ClassDB::bind_method(
                 D_METHOD("set_door_close_warning", "door_close_warning"), &TrainDoor::set_door_close_warning);
         ClassDB::bind_method(D_METHOD("get_door_close_warning"), &TrainDoor::get_door_close_warning);
@@ -103,12 +101,11 @@ namespace godot {
         ADD_PROPERTY(
                 PropertyInfo(Variant::FLOAT, "platform/max_speed"), "set_door_platform_max_speed",
                 "get_door_platform_max_speed");
-        ClassDB::bind_method(
-                D_METHOD("set_platform_open_method", "platform_open_method"), &TrainDoor::set_platform_open_method);
-        ClassDB::bind_method(D_METHOD("get_platform_open_method"), &TrainDoor::get_platform_open_method);
+        ClassDB::bind_method(D_METHOD("set_platform_type", "platform_type"), &TrainDoor::set_platform_type);
+        ClassDB::bind_method(D_METHOD("get_platform_type"), &TrainDoor::get_platform_type);
         ADD_PROPERTY(
-                PropertyInfo(Variant::INT, "platform/open_method", PROPERTY_HINT_ENUM, "Shift,Rotate"),
-                "set_platform_open_method", "get_platform_open_method");
+                PropertyInfo(Variant::INT, "platform/type", PROPERTY_HINT_ENUM, "Shift,Rotate"), "set_platform_type",
+                "get_platform_type");
         ClassDB::bind_method(
                 D_METHOD("set_door_platform_max_shift", "platform_max_shift"), &TrainDoor::set_door_platform_max_shift);
         ClassDB::bind_method(D_METHOD("get_door_platform_max_shift"), &TrainDoor::get_door_platform_max_shift);
@@ -138,7 +135,7 @@ namespace godot {
         ADD_PROPERTY(
                 PropertyInfo(
                         Variant::INT, "permit/light_blinking", PROPERTY_HINT_ENUM,
-                        "ContinuousLight,FlashingOnPermissionWithStep,FlashingOnPermission,FlashingAlways"),
+                        "Continuous light,Flashing on permission w/step,Flashing on permission,Flashing always"),
                 "set_door_permit_light_blinking", "get_door_permit_light_blinking");
 
         ClassDB::bind_method(D_METHOD("next_door_permit_preset"), &TrainDoor::next_door_permit_preset);
@@ -154,20 +151,16 @@ namespace godot {
         ClassDB::bind_method(D_METHOD("set_doors_remote_only", "state"), &TrainDoor::set_doors_remote_only);
 
 
-        BIND_ENUM_CONSTANT(PERMIT_LIGHT_CONTINUOUS_LIGHT);
-        BIND_ENUM_CONSTANT(PERMIT_LIGHT_FLASHING_ON_PERMISSION_WITH_STEP);
-        BIND_ENUM_CONSTANT(PERMIT_LIGHT_FLASHING_ON_PERMISSION);
-        BIND_ENUM_CONSTANT(PERMIT_LIGHT_FLASHING_ALWAYS);
+        BIND_ENUM_CONSTANT(DOOR_PERMIT_LIGHT_CONTINUOUS);
+        BIND_ENUM_CONSTANT(DOOR_PERMIT_LIGHT_FLASHING_ON_PERMISSION_WITH_STEP);
+        BIND_ENUM_CONSTANT(DOOR_PERMIT_LIGHT_FLASHING_ON_PERMISSION);
+        BIND_ENUM_CONSTANT(DOOR_PERMIT_LIGHT_FLASHING_ALWAYS);
 
-        BIND_ENUM_CONSTANT(PLATFORM_ANIMATION_TYPE_SHIFT);
-        BIND_ENUM_CONSTANT(PLATFORM_ANIMATION_TYPE_ROTATE);
+        BIND_ENUM_CONSTANT(DOOR_PLATFORM_TYPE_SHIFT);
+        BIND_ENUM_CONSTANT(DOOR_PLATFORM_TYPE_ROTATE);
 
         BIND_ENUM_CONSTANT(DOOR_SIDE_RIGHT)
         BIND_ENUM_CONSTANT(DOOR_SIDE_LEFT)
-
-        BIND_ENUM_CONSTANT(NOTIFICATION_RANGE_LOCAL)
-        BIND_ENUM_CONSTANT(NOTIFICATION_RANGE_UNIT)
-        BIND_ENUM_CONSTANT(NOTIFICATION_RANGE_CONSIST)
 
         BIND_ENUM_CONSTANT(DOOR_STATE_CLOSE)
         BIND_ENUM_CONSTANT(DOOR_STATE_OPEN)
@@ -220,6 +213,7 @@ namespace godot {
         state["doors/locked"] = mover->Doors.is_locked;
         state["doors/lock_enabled"] = mover->Doors.lock_enabled;
         state["doors/step_enabled"] = mover->Doors.step_enabled;
+        state["doors/open_control"] = mover->Doors.open_control;
 
         state["doors/left/open"] = left_door.is_open;
         state["doors/left/open_permit"] = left_door.open_permit;
@@ -243,7 +237,7 @@ namespace godot {
     }
 
     void TrainDoor::_do_process_mover(TMoverParameters *mover, double delta) {
-        mover->update_doors(delta); // działaj plz qwp
+        mover->update_doors(delta);
     }
 
     void TrainDoor::next_door_permit_preset() {
@@ -281,9 +275,7 @@ namespace godot {
     void TrainDoor::operate_doors(const DoorSide p_side, const bool p_state) {
         TMoverParameters *mover = get_mover();
         ASSERT_MOVER(mover);
-        mover->OperateDoors(p_side == DoorSide::DOOR_SIDE_LEFT ? side::left : side::right,
-                            p_state); // range_t::local);
-        // FIXME: range_t::local does not emit signal to train cars
+        mover->OperateDoors(p_side == DoorSide::DOOR_SIDE_LEFT ? side::left : side::right, p_state);
     }
 
     void TrainDoor::operate_left_doors(const bool p_state) {
@@ -297,7 +289,7 @@ namespace godot {
     void TrainDoor::set_lock_doors(const bool p_state) {
         TMoverParameters *mover = get_mover();
         ASSERT_MOVER(mover);
-        mover->LockDoors(p_state); //, range_t::local); // FIXME: range_t::local does not emit signal to train cars
+        mover->LockDoors(p_state);
     }
 
     void TrainDoor::set_doors_remote_only(const bool p_state) {
@@ -307,16 +299,14 @@ namespace godot {
     }
 
     void TrainDoor::_do_update_internal_mover(TMoverParameters *mover) {
-        auto it1 = DoorControlsMap.find(door_open_method);
-        if (it1 != DoorControlsMap.end()) {
-            mover->Doors.open_control = it1->second;
+        if (doorControlsMap.find(door_open_method) != doorControlsMap.end()) {
+            mover->Doors.open_control = doorControlsMap.at(door_open_method);
         } else {
             log_error("Unhandled door open controls position: " + String::num(static_cast<int>(door_open_method)));
         }
 
-        auto it2 = DoorControlsMap.find(door_close_method);
-        if (it2 != DoorControlsMap.end()) {
-            mover->Doors.close_control = it2->second;
+        if (doorControlsMap.find(door_close_method) != doorControlsMap.end()) {
+            mover->Doors.close_control = doorControlsMap.at(door_close_method);
         } else {
             log_error("Unhandled door close controls position: " + String::num(static_cast<int>(door_close_method)));
         }
@@ -344,20 +334,30 @@ namespace godot {
         mover->Doors.close_delay = door_close_delay;
         mover->Doors.range = door_max_shift;
         mover->Doors.range_out = door_max_shift_plug;
-        ;
-        mover->Doors.type = door_type;
+
+        if (doorTypeMap.find(door_type) != doorTypeMap.end()) {
+            mover->Doors.type = doorTypeMap.at(door_type);
+        } else {
+            log_error("Unhandled door type: " + String::num(static_cast<int>(door_type)));
+        }
+
         mover->Doors.has_warning = door_close_warning;
         mover->Doors.has_autowarning = auto_door_close_warning;
         mover->Doors.has_lock = has_lock;
-        bool const remote_door_control{
-                mover->Doors.open_control == control_t::driver || mover->Doors.open_control == control_t::conductor ||
-                mover->Doors.open_control == control_t::mixed};
-        door_voltage = remote_door_control ? DoorVoltage::DOOR_VOLTAGE_24 : DoorVoltage::DOOR_VOLTAGE_0;
-        mover->Doors.voltage = door_voltage;
+        bool const remote_door_control = {
+                (door_open_method == DOOR_CONTROLS_DRIVER || door_open_method == DOOR_CONTROLS_CONDUCTOR ||
+                 door_open_method == DOOR_CONTROLS_MIXED)};
+
+        if (voltageMap.find(door_voltage) != voltageMap.end()) {
+            mover->Doors.voltage = voltageMap.at(door_voltage);
+        } else {
+            mover->Doors.voltage = remote_door_control ? 24 : 0;
+        }
         mover->Doors.step_rate = platform_speed;
         mover->Doors.step_range = platform_max_shift;
-        if (platform_open_method == PlatformAnimationType::PLATFORM_ANIMATION_TYPE_SHIFT) {
-            mover->Doors.step_type = 1;
+
+        if (doorPlatformTypeMap.find(platform_type) != doorPlatformTypeMap.end()) {
+            mover->Doors.step_type = doorPlatformTypeMap.at(platform_type);
         }
 
         mover->MirrorMaxShift = mirror_max_shift;
@@ -564,13 +564,13 @@ namespace godot {
         return platform_speed;
     }
 
-    void TrainDoor::set_platform_open_method(const PlatformAnimationType p_shift_method) {
-        platform_open_method = p_shift_method;
+    void TrainDoor::set_platform_type(const DoorPlatformType p_type) {
+        platform_type = p_type;
         _dirty = true;
     }
 
-    int TrainDoor::get_platform_open_method() const {
-        return platform_open_method;
+    TrainDoor::DoorPlatformType TrainDoor::get_platform_type() const {
+        return platform_type;
     }
 
     void TrainDoor::set_mirror_max_shift(const double p_max_shift) {
@@ -600,12 +600,12 @@ namespace godot {
         return door_permit_required;
     }
 
-    void TrainDoor::set_door_permit_light_blinking(const PermitLights p_blinking_mode) {
+    void TrainDoor::set_door_permit_light_blinking(const DoorPermitLight p_blinking_mode) {
         door_permit_light_blinking = p_blinking_mode;
         _dirty = true;
     }
 
-    int TrainDoor::get_door_permit_light_blinking() const {
+    TrainDoor::DoorPermitLight TrainDoor::get_door_permit_light_blinking() const {
         return door_permit_light_blinking;
     }
 } // namespace godot

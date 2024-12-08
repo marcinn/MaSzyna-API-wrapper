@@ -174,16 +174,16 @@
 		</member>
 	</members>
 	<constants>
-		<constant name="PERMIT_LIGHT_CONTINUOUS_LIGHT" value="0" enum="PermitLights">
+		<constant name="DOOR_PERMIT_LIGHT_CONTINUOUS" value="0" enum="DoorPermitLight">
 			Continuous light
 		</constant>
-		<constant name="PERMIT_LIGHT_FLASHING_ON_PERMISSION_WITH_STEP" value="1" enum="PermitLights">
+		<constant name="DOOR_PERMIT_LIGHT_FLASHING_ON_PERMISSION_WITH_STEP" value="1" enum="DoorPermitLight">
 			Continuous light when any door is open or any step is extended; flashing only when permission is granted
 		</constant>
-		<constant name="PERMIT_LIGHT_FLASHING_ON_PERMISSION" value="2" enum="PermitLights">
+		<constant name="DOOR_PERMIT_LIGHT_FLASHING_ON_PERMISSION" value="2" enum="DoorPermitLight">
 			Continuous light when any door is open; flashing when permission is granted; the position of the step is irrelevant
 		</constant>
-		<constant name="PERMIT_LIGHT_FLASHING_ALWAYS" value="3" enum="PermitLights">
+		<constant name="DOOR_PERMIT_LIGHT_FLASHING_ALWAYS" value="3" enum="DoorPermitLight">
 			Permission light is flashing regardless of the state of the doors or the position of the step
 		</constant>
 		<constant name="PLATFORM_ANIMATION_TYPE_SHIFT" value="0" enum="PlatformAnimationType">
@@ -197,12 +197,6 @@
 		</constant>
 		<constant name="DOOR_SIDE_LEFT" value="1" enum="DoorSide">
 			Indicates that doors are on the left side of the train
-		</constant>
-		<constant name="NOTIFICATION_RANGE_LOCAL" value="0" enum="NotificationRange">
-		</constant>
-		<constant name="NOTIFICATION_RANGE_UNIT" value="1" enum="NotificationRange">
-		</constant>
-		<constant name="NOTIFICATION_RANGE_CONSIST" value="2" enum="NotificationRange">
 		</constant>
 		<constant name="DOOR_STATE_CLOSE" value="0" enum="DoorState">
 			Closed state of doors

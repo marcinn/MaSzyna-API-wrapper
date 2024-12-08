@@ -14,34 +14,36 @@ namespace godot {
             void _unregister_commands() override;
 
         public:
-            enum PermitLights {
-                PERMIT_LIGHT_CONTINUOUS_LIGHT,
-                PERMIT_LIGHT_FLASHING_ON_PERMISSION_WITH_STEP,
-                PERMIT_LIGHT_FLASHING_ON_PERMISSION,
-                PERMIT_LIGHT_FLASHING_ALWAYS
+            enum DoorPermitLight {
+                DOOR_PERMIT_LIGHT_CONTINUOUS,
+                DOOR_PERMIT_LIGHT_FLASHING_ON_PERMISSION_WITH_STEP,
+                DOOR_PERMIT_LIGHT_FLASHING_ON_PERMISSION,
+                DOOR_PERMIT_LIGHT_FLASHING_ALWAYS
             };
 
             enum DoorSide { DOOR_SIDE_RIGHT, DOOR_SIDE_LEFT };
             enum DoorState { DOOR_STATE_CLOSE, DOOR_STATE_OPEN };
-            enum DoorVoltage { DOOR_VOLTAGE_0 = 0, DOOR_VOLTAGE_12 = 12, DOOR_VOLTAGE_24 = 24, DOOR_VOLTAGE_112 = 112 };
-            enum DoorType { DOOR_TYPE_SHIFT = 1, DOOR_TYPE_ROTATE = 2, DOOR_TYPE_FOLD = 3, DOOR_TYPE_PLUG = 4 };
-            enum NotificationRange { NOTIFICATION_RANGE_LOCAL, NOTIFICATION_RANGE_UNIT, NOTIFICATION_RANGE_CONSIST };
-            enum PlatformAnimationType { PLATFORM_ANIMATION_TYPE_SHIFT, PLATFORM_ANIMATION_TYPE_ROTATE };
+            enum DoorVoltage {
+                DOOR_VOLTAGE_AUTO,
+                DOOR_VOLTAGE_0,
+                DOOR_VOLTAGE_12,
+                DOOR_VOLTAGE_24,
+                DOOR_VOLTAGE_112,
+            };
+            enum DoorType {
+                DOOR_TYPE_SHIFT,
+                DOOR_TYPE_ROTATE,
+                DOOR_TYPE_FOLD,
+                DOOR_TYPE_PLUG,
+            };
+            enum DoorPlatformType { DOOR_PLATFORM_TYPE_SHIFT, DOOR_PLATFORM_TYPE_ROTATE };
 
             enum DoorControls {
-                DOOR_CONTROLS_PASSENGER = control_t::passenger,
-                DOOR_CONTROLS_AUTOMATIC = control_t::autonomous,
-                DOOR_CONTROLS_DRIVER = control_t::driver,
-                DOOR_CONTROLS_CONDUCTOR = control_t::conductor,
-                DOOR_CONTROLS_MIXED = control_t::mixed
-            };
-
-            const std::unordered_map<DoorControls, Maszyna::control_t> DoorControlsMap = {
-                    {DoorControls::DOOR_CONTROLS_PASSENGER, control_t::passenger},
-                    {DoorControls::DOOR_CONTROLS_AUTOMATIC, control_t::autonomous},
-                    {DoorControls::DOOR_CONTROLS_DRIVER, control_t::driver},
-                    {DoorControls::DOOR_CONTROLS_CONDUCTOR, control_t::conductor},
-                    {DoorControls::DOOR_CONTROLS_MIXED, control_t::mixed},
+                DOOR_CONTROLS_PASSENGER,
+                DOOR_CONTROLS_AUTOMATIC,
+                DOOR_CONTROLS_DRIVER,
+                DOOR_CONTROLS_CONDUCTOR,
+                DOOR_CONTROLS_MIXED,
             };
 
             TrainDoor();
@@ -92,16 +94,16 @@ namespace godot {
             float get_door_platform_max_shift() const;
             void set_door_platform_speed(float p_speed);
             float get_door_platform_speed() const;
-            void set_platform_open_method(PlatformAnimationType p_shift_method);
-            int get_platform_open_method() const;
+            void set_platform_type(DoorPlatformType p_type);
+            DoorPlatformType get_platform_type() const;
             void set_mirror_max_shift(double p_max_shift);
             double get_mirror_max_shift() const;
             void set_mirror_vel_close(double p_vel_close);
             double get_mirror_vel_close() const;
             void set_door_permit_required(bool p_permit_required);
             bool get_door_permit_required() const;
-            void set_door_permit_light_blinking(PermitLights p_blinking_mode);
-            int get_door_permit_light_blinking() const;
+            void set_door_permit_light_blinking(DoorPermitLight p_blinking_mode);
+            DoorPermitLight get_door_permit_light_blinking() const;
 
             void permit_door_step(const bool p_state);
             void permit_doors(const DoorSide p_side, const bool p_state);
@@ -116,6 +118,33 @@ namespace godot {
             void previous_door_permit_preset();
 
         private:
+            // Maszyna Mover has no consts for voltages
+            const std::map<DoorVoltage, int> voltageMap = {
+                    {DOOR_VOLTAGE_0, 0}, {DOOR_VOLTAGE_12, 12}, {DOOR_VOLTAGE_24, 24}, {DOOR_VOLTAGE_112, 112}};
+
+            // Maszyna Mover has no consts for door types
+            const std::map<DoorType, int> doorTypeMap = {
+                    {DOOR_TYPE_SHIFT, 1}, {DOOR_TYPE_ROTATE, 2}, {DOOR_TYPE_FOLD, 3}, {DOOR_TYPE_PLUG, 4}};
+            //
+            // Maszyna Mover has no consts for door platform types
+            const std::map<DoorPlatformType, int> doorPlatformTypeMap = {
+                    {DOOR_PLATFORM_TYPE_SHIFT, 1}, {DOOR_PLATFORM_TYPE_ROTATE, 2}};
+
+            // Maszyna Mover has no consts for permit lights
+            const std::map<DoorPermitLight, int> doorPermitLightMap = {
+                    {DOOR_PERMIT_LIGHT_CONTINUOUS, 0},
+                    {DOOR_PERMIT_LIGHT_FLASHING_ON_PERMISSION_WITH_STEP, 1},
+                    {DOOR_PERMIT_LIGHT_FLASHING_ON_PERMISSION, 2},
+                    {DOOR_PERMIT_LIGHT_FLASHING_ALWAYS, 3}};
+
+            const std::unordered_map<DoorControls, Maszyna::control_t> doorControlsMap = {
+                    {DoorControls::DOOR_CONTROLS_PASSENGER, Maszyna::control_t::passenger},
+                    {DoorControls::DOOR_CONTROLS_AUTOMATIC, Maszyna::control_t::autonomous},
+                    {DoorControls::DOOR_CONTROLS_DRIVER, Maszyna::control_t::driver},
+                    {DoorControls::DOOR_CONTROLS_CONDUCTOR, Maszyna::control_t::conductor},
+                    {DoorControls::DOOR_CONTROLS_MIXED, Maszyna::control_t::mixed},
+            };
+
             /**
              * Type of the door. Default value from internal mover
              *
@@ -154,7 +183,7 @@ namespace godot {
             /**
              * Low voltage circuit voltage required for door control. Default value from internal mover
              */
-            DoorVoltage door_voltage = DoorVoltage::DOOR_VOLTAGE_0;
+            DoorVoltage door_voltage = DoorVoltage::DOOR_VOLTAGE_AUTO;
 
             /**
              * Buzzer before closing the door. Default value from internal mover
@@ -248,30 +277,20 @@ namespace godot {
             /**
              * Blinking permit light. Default value from internal mover
              */
-            PermitLights door_permit_light_blinking = PermitLights::PERMIT_LIGHT_CONTINUOUS_LIGHT;
+            DoorPermitLight door_permit_light_blinking = DoorPermitLight::DOOR_PERMIT_LIGHT_CONTINUOUS;
 
-            /**
-             * Platform animation type
-             */
-            PlatformAnimationType platform_open_method = PlatformAnimationType::PLATFORM_ANIMATION_TYPE_SHIFT;
+            DoorPlatformType platform_type = DoorPlatformType::DOOR_PLATFORM_TYPE_ROTATE;
 
             /**
              * Describes the side where the doors are placed
              */
             DoorSide door_side = DoorSide::DOOR_SIDE_LEFT;
-
-            /**
-             * @TODO: Maybe move to TrainController since it seems to be more generic property? It is not used there
-             * anyways
-             */
-            NotificationRange notification_range = NotificationRange::NOTIFICATION_RANGE_UNIT;
     };
 } // namespace godot
 
-VARIANT_ENUM_CAST(TrainDoor::PermitLights)
-VARIANT_ENUM_CAST(TrainDoor::PlatformAnimationType)
+VARIANT_ENUM_CAST(TrainDoor::DoorPermitLight)
+VARIANT_ENUM_CAST(TrainDoor::DoorPlatformType)
 VARIANT_ENUM_CAST(TrainDoor::DoorSide)
-VARIANT_ENUM_CAST(TrainDoor::NotificationRange)
 VARIANT_ENUM_CAST(TrainDoor::DoorState)
 VARIANT_ENUM_CAST(TrainDoor::DoorControls)
 VARIANT_ENUM_CAST(TrainDoor::DoorVoltage)
