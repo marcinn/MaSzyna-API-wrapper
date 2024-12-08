@@ -30,7 +30,9 @@ Resposibilities of the core:
 * [Overall architecture](architecture)
 * [Wrapping the original MaSzyna physics](wrapping-mover)
 
-## Knowledge base (original simulator)
+## Knowledge base
+
+### MaSzyna Train Simulator
 
 * [FIZ files](https://wiki.eu07.pl/index.php/Plik_charakterystyki)
 * [E3D format](https://wiki.eu07.pl/index.php/Format_E3D)
@@ -39,6 +41,18 @@ Resposibilities of the core:
 * [MAT format](https://wiki.eu07.pl/index.php/Materia%C5%82y_-_Pliki_.mat)
 * [Scenery file format](https://wiki.eu07.pl/index.php/Plik_scenerii)
 * [Node objects](https://wiki.eu07.pl/index.php/Obiekt_node)
+
+### Godot Game Engine
+
+* [GDExtension documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/index.html)
+* [Making plugins for Godot](https://docs.godotengine.org/en/stable/tutorials/plugins/editor/making_plugins.html)
+* [Architecture: Why Godot is not ECS based engine](https://godotengine.org/article/why-isnt-godot-ecs-based-game-engine/)
+* [Architecture: Not everything must be a Node](https://docs.godotengine.org/en/stable/tutorials/best_practices/node_alternatives.html)
+* [Godot Multiplayer API](https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html)
+* [Godot Input handling](https://docs.godotengine.org/en/stable/tutorials/inputs/index.html)
+* [Godot Assets pipeline](https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/index.html)
+* [Godot Materials](https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html)
+* [Godot Performance and optimization](https://docs.godotengine.org/en/stable/tutorials/performance/index.html#)
 
 
 ## The Mission
