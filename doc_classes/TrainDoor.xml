@@ -17,19 +17,19 @@
 		<method name="operate_doors">
 			<return type="void" />
 			<param index="0" name="side" type="int" enum="TrainDoor.DoorSide" />
-			<param index="1" name="state" type="int" enum="TrainDoor.DoorState" />
+			<param index="1" name="state" type="bool" />
 			<description>
 			</description>
 		</method>
 		<method name="operate_left_doors">
 			<return type="void" />
-			<param index="0" name="state" type="int" enum="TrainDoor.DoorState" />
+			<param index="0" name="state" type="bool" />
 			<description>
 			</description>
 		</method>
 		<method name="operate_right_doors">
 			<return type="void" />
-			<param index="0" name="state" type="int" enum="TrainDoor.DoorState" />
+			<param index="0" name="state" type="bool" />
 			<description>
 			</description>
 		</method>
@@ -137,7 +137,7 @@
 		<member name="permit/default" type="int" setter="set_door_permit_list_default" getter="get_door_permit_list_default" default="-1">
 			By default, the position of the knob is set from the permit/list entry where the positions are numbered starting from 1
 		</member>
-		<member name="permit/light_blinking" type="int" setter="set_door_permit_light_blinking" getter="get_door_permit_light_blinking" default="0">
+		<member name="permit/light_blinking" type="int" setter="set_door_permit_light_blinking" getter="get_door_permit_light_blinking" enum="TrainDoor.DoorPermitLight" default="0">
 			Configuration of the permission light on the door
 		</member>
 		<member name="permit/list" type="Array" setter="set_door_permit_list" getter="get_door_permit_list" default="[&quot;0&quot;, &quot;0&quot;, &quot;0&quot;]">
@@ -158,13 +158,13 @@
 		<member name="platform/max_speed" type="float" setter="set_door_platform_max_speed" getter="get_door_platform_max_speed" default="0.0">
 			Maximum speed of opening the platform
 		</member>
-		<member name="platform/open_method" type="int" setter="set_platform_open_method" getter="get_platform_open_method" default="0">
-			Type of animation of the platform
-		</member>
 		<member name="platform/speed" type="float" setter="set_door_platform_speed" getter="get_door_platform_speed" default="0.5">
 			The speed of the animation platform, where 1.0 corresponds to an animation lasting one second, the value 0.5 corresponds to two seconds, etc
 		</member>
-		<member name="type" type="int" setter="set_door_type" getter="get_door_type" enum="TrainDoor.DoorType" default="2">
+		<member name="platform/type" type="int" setter="set_platform_type" getter="get_platform_type" enum="TrainDoor.DoorPlatformType" default="1">
+			The type of the platform
+		</member>
+		<member name="type" type="int" setter="set_door_type" getter="get_door_type" enum="TrainDoor.DoorType" default="1">
 			[code]Doors:DoorOpenMethod[/code]
 			Type of doors
 		</member>
@@ -186,11 +186,11 @@
 		<constant name="DOOR_PERMIT_LIGHT_FLASHING_ALWAYS" value="3" enum="DoorPermitLight">
 			Permission light is flashing regardless of the state of the doors or the position of the step
 		</constant>
-		<constant name="PLATFORM_ANIMATION_TYPE_SHIFT" value="0" enum="PlatformAnimationType">
-			The platform's animation consist of shifting the platform
+		<constant name="DOOR_PLATFORM_TYPE_SHIFT" value="0" enum="DoorPlatformType">
+			Platform animation shift
 		</constant>
-		<constant name="PLATFORM_ANIMATION_TYPE_ROTATE" value="1" enum="PlatformAnimationType">
-			The platform's animation consist of rotating the platform
+		<constant name="DOOR_PLATFORM_TYPE_ROTATE" value="1" enum="DoorPlatformType">
+			Platform animation rotate
 		</constant>
 		<constant name="DOOR_SIDE_RIGHT" value="0" enum="DoorSide">
 			Indicates that doors are on the right side of the train
@@ -207,10 +207,10 @@
 		<constant name="DOOR_CONTROLS_PASSENGER" value="0" enum="DoorControls">
 			Default type when no definition is provided; doors are manually closed/opened, ignoring any remote commands
 		</constant>
-		<constant name="DOOR_CONTROLS_AUTOMATIC" value="2" enum="DoorControls">
+		<constant name="DOOR_CONTROLS_AUTOMATIC" value="1" enum="DoorControls">
 			Doors do operate automatically
 		</constant>
-		<constant name="DOOR_CONTROLS_DRIVER" value="1" enum="DoorControls">
+		<constant name="DOOR_CONTROLS_DRIVER" value="2" enum="DoorControls">
 			Doors are controlled by the driver of the train and only respond to remote commands
 		</constant>
 		<constant name="DOOR_CONTROLS_CONDUCTOR" value="3" enum="DoorControls">
@@ -219,28 +219,28 @@
 		<constant name="DOOR_CONTROLS_MIXED" value="4" enum="DoorControls">
 			Doors can be closed both manually and remotely
 		</constant>
-		<constant name="DOOR_VOLTAGE_0" value="0" enum="DoorVoltage">
+		<constant name="DOOR_VOLTAGE_0" value="1" enum="DoorVoltage">
 			0V is required in the low voltage circuit. Doors are opened manually
 		</constant>
-		<constant name="DOOR_VOLTAGE_12" value="12" enum="DoorVoltage">
+		<constant name="DOOR_VOLTAGE_12" value="2" enum="DoorVoltage">
 			12V are required in the low-voltage circuit to control the doors
 		</constant>
-		<constant name="DOOR_VOLTAGE_24" value="24" enum="DoorVoltage">
+		<constant name="DOOR_VOLTAGE_24" value="3" enum="DoorVoltage">
 			24V are required in the low voltage circuit to control the doors
 		</constant>
-		<constant name="DOOR_VOLTAGE_112" value="112" enum="DoorVoltage">
+		<constant name="DOOR_VOLTAGE_112" value="4" enum="DoorVoltage">
 			112V are required in the low voltage circuit to control the doors
 		</constant>
-		<constant name="DOOR_TYPE_SHIFT" value="1" enum="DoorType">
+		<constant name="DOOR_TYPE_SHIFT" value="0" enum="DoorType">
 			Sliding/shifting door type
 		</constant>
-		<constant name="DOOR_TYPE_ROTATE" value="2" enum="DoorType">
+		<constant name="DOOR_TYPE_ROTATE" value="1" enum="DoorType">
 			Rotating door type, default value
 		</constant>
-		<constant name="DOOR_TYPE_FOLD" value="3" enum="DoorType">
+		<constant name="DOOR_TYPE_FOLD" value="2" enum="DoorType">
 			Pivot-folding door type
 		</constant>
-		<constant name="DOOR_TYPE_PLUG" value="4" enum="DoorType">
+		<constant name="DOOR_TYPE_PLUG" value="3" enum="DoorType">
 			Pivot-sliding door type
 		</constant>
 	</constants>
