@@ -235,7 +235,7 @@
 			Sliding/shifting door type
 		</constant>
 		<constant name="DOOR_TYPE_ROTATE" value="1" enum="DoorType">
-			Rotating door type, default value
+			Rotating door type
 		</constant>
 		<constant name="DOOR_TYPE_FOLD" value="2" enum="DoorType">
 			Pivot-folding door type
