@@ -1,4 +1,4 @@
-.PHONY=docs compile watch-and-compile
+.PHONY=docs compile watch-and-compile docs-server docs-install
 .DEFAULT_GOAL =compile
 
 docs:
@@ -9,3 +9,9 @@ compile:
 
 watch-and-compile:
 	sh scripts/autocompile.sh
+
+docs-install:
+	cd docs/ && make install
+
+docs-server:
+	cd docs/ && bundle exec jekyll serve --livereload
