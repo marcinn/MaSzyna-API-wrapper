@@ -2,3 +2,6 @@
 
 install:
 	bundle install
+
+runserver:
+	bundle exec jekyll serve --livereload

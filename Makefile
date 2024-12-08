@@ -11,7 +11,7 @@ watch-and-compile:
 	sh scripts/autocompile.sh
 
 docs-install:
-	cd docs/ && make install
+	cd docs && make install
 
 docs-server:
-	cd docs/ && bundle exec jekyll serve --livereload
+	cd docs && make runserver

@@ -1,9 +1,11 @@
 ---
 layout: page
-title: "Wrapping the original MaSzyna physics"
+title: "Wrapping the MOVER"
 ---
 
-The MaSzyna project's vehicle simulation is appreciated all over the world.
+The MaSzyna project's vehicle simulation, implemented mostly as a
+[Mover.cpp](https://github.com/eu07/maszyna/blob/master/McZapkie/Mover.cpp)
+with surrounding classes, is appreciated all over the world.
 Wrapping the original MaSzyna's physics is a core concept of making
 a successful port of the simulator.
 

@@ -3,6 +3,8 @@
 /demo/*.import
 /cmake-build-debug/
 /src/gen/
+/docs/vendor
+/docs/.bundle
 CMakeLists.txt
 *.o
 *.obj

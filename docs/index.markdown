@@ -5,8 +5,12 @@
 layout: home
 ---
 
+<div style="display: flex; justify-content: space-between; align-items: center;">
+<img src="assets/godot-logo.png" style="width: 40%; height: auto"/>
+<img src="assets/maszyna-logo.jpg" style="width: 40%; height: auto" />
+</div>
 
-## MaSzyna Reloaded Core
+## Godot and MaSzyna EU07
 
 **MaSzyna: Reloaded Core** is intended to be the technical foundation for the development
 of a port of [MaSzyna Train Simulator](https://eu07.pl).
@@ -55,3 +59,8 @@ Our focus:
 
 - **Customization and Modding Potential:** Our tools empower players and developers to personalize
   their train simulation experience through extensive customization options and modding capabilities.
+
+## Authors
+
+- **[Marcin Nowak](https://github.com/marcinn/)**: Software architecture and programming
+- **[Karol "JezSonic" Tomaszewski](https://github.com/JezSonic)**: Game port concept, CI and programming
