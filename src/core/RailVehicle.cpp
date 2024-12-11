@@ -13,8 +13,13 @@ namespace godot {
         ClassDB::bind_method(D_METHOD("get_trainset"), &RailVehicle::get_trainset);
         ClassDB::bind_method(D_METHOD("_to_string"), &RailVehicle::_to_string);
 
+        /*
         ADD_PROPERTY(
-                PropertyInfo(Variant::OBJECT, "trainset", PROPERTY_HINT_RESOURCE_TYPE, "TrainSet"), "", "get_trainset");
+                PropertyInfo(
+                        Variant::OBJECT, "trainset", PROPERTY_HINT_RESOURCE_TYPE, "TrainSet",
+                        PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_SCRIPT_VARIABLE | PROPERTY_USAGE_NO_INSTANCE_STATE),
+                "", "get_trainset");
+        */
 
         BIND_ENUM_CONSTANT(FRONT);
         BIND_ENUM_CONSTANT(BACK);

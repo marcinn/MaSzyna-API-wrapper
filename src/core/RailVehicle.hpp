@@ -13,12 +13,12 @@ namespace godot {
 
         protected:
             static void _bind_methods();
+            Ref<TrainSet> trainset;
 
         public:
             String id;
             RailVehicle *front = {};
             RailVehicle *back = {};
-            Ref<TrainSet> trainset;
 
             enum Side {
                 FRONT = 0,

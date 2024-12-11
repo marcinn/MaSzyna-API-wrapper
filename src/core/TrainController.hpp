@@ -1,6 +1,8 @@
 #pragma once
 #include <godot_cpp/classes/node.hpp>
 #include "../maszyna/McZapkie/MOVER.h"
+#include "RailVehicle.hpp"
+#include "TrainSet.hpp"
 
 
 namespace godot {
@@ -11,8 +13,8 @@ namespace godot {
     class TrainSystem;
 
 
-    class TrainController final : public Node {
-            GDCLASS(TrainController, Node)
+    class TrainController final : public RailVehicle {
+            GDCLASS(TrainController, RailVehicle)
         private:
             TMoverParameters *mover;
             String train_id = "";
