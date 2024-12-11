@@ -14,24 +14,24 @@ namespace godot {
 
     TrainSet::TrainSet() {}
 
-    void TrainSet::_init(Ref<RailVehicle> _start_car) {
+    void TrainSet::_init(RailVehicle *_start_car) {
         start_vehicle = _start_car;
     }
 
-    Ref<RailVehicle> TrainSet::get_by_index(int index) {
-        Ref<RailVehicle> current;
+    RailVehicle *TrainSet::get_by_index(int index) {
+        RailVehicle *current;
         if (index >= 0) {
             current = get_head();
-            for (int i = 0; i < index && current.is_valid(); ++i) {
+            for (int i = 0; i < index && current != nullptr; ++i) {
                 current = current->back;
             }
         } else {
             current = get_tail();
-            for (int i = -1; i > index && current.is_valid(); --i) {
+            for (int i = -1; i > index && current != nullptr; --i) {
                 current = current->front;
             }
         }
-        if (!current.is_valid()) {
+        if (current == nullptr) {
             UtilityFunctions::push_error("Index out of range.");
         }
         return current;
@@ -39,25 +39,25 @@ namespace godot {
 
     Array TrainSet::to_array() const {
         Array result;
-        Ref<RailVehicle> current = get_head();
-        while (current.is_valid()) {
+        RailVehicle *current = get_head();
+        while (current != nullptr) {
             result.append(current);
             current = current->back;
         }
         return result;
     }
 
-    Ref<RailVehicle> TrainSet::get_head() const {
-        Ref<RailVehicle> current = start_vehicle;
-        while (current->front.is_valid()) {
+    RailVehicle *TrainSet::get_head() const {
+        RailVehicle *current = start_vehicle;
+        while (current->front != nullptr) {
             current = current->front;
         }
         return current;
     }
 
-    Ref<RailVehicle> TrainSet::get_tail() const {
-        Ref<RailVehicle> current = start_vehicle;
-        while (current->back.is_valid()) {
+    RailVehicle *TrainSet::get_tail() const {
+        RailVehicle *current = start_vehicle;
+        while (current->back != nullptr) {
             current = current->back;
         }
         return current;

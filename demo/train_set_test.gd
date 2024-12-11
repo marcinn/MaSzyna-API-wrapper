@@ -2,6 +2,7 @@ extends Node2D
 
 func _ready():
     var engine = RailVehicle.new()
+    engine.name = "Engine"
     var passenger1 = RailVehicle.new()
     var passenger2 = RailVehicle.new()
 

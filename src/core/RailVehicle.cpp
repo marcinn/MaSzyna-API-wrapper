@@ -11,6 +11,7 @@ namespace godot {
         ClassDB::bind_method(D_METHOD("uncouple_front"), &RailVehicle::uncouple_front);
         ClassDB::bind_method(D_METHOD("uncouple_back"), &RailVehicle::uncouple_back);
         ClassDB::bind_method(D_METHOD("get_trainset"), &RailVehicle::get_trainset);
+        ClassDB::bind_method(D_METHOD("_to_string"), &RailVehicle::_to_string);
 
         ADD_PROPERTY(
                 PropertyInfo(Variant::OBJECT, "trainset", PROPERTY_HINT_RESOURCE_TYPE, "TrainSet"), "", "get_trainset");
@@ -24,42 +25,46 @@ namespace godot {
         trainset->_init(this);
     }
 
-    void RailVehicle::couple(Ref<RailVehicle> other_vehicle, Side self_side, Side other_side) {
+    String RailVehicle::_to_string() const {
+        return String("<RailVehicle({0})>").format(Array::make(get_name()));
+    }
+
+    void RailVehicle::couple(RailVehicle *other_vehicle, Side self_side, Side other_side) {
         if (self_side == Side::FRONT && other_side == Side::BACK) {
-            if (front.is_valid() || other_vehicle->back.is_valid()) {
+            if (front != nullptr || other_vehicle->back != nullptr) {
                 UtilityFunctions::push_error("One of the cars is already coupled.");
                 return;
             }
             front = other_vehicle;
-            other_vehicle->back = Ref(this);
+            other_vehicle->back = this;
         } else if (self_side == Side::BACK && other_side == Side::FRONT) {
-            if (back.is_valid() || other_vehicle->front.is_valid()) {
+            if (back != nullptr || other_vehicle->front != nullptr) {
                 UtilityFunctions::push_error("One of the cars is already coupled.");
                 return;
             }
             back = other_vehicle;
-            other_vehicle->front = Ref(this);
+            other_vehicle->front = this;
         } else {
             UtilityFunctions::push_error("Invalid coupling sides specified.");
         }
     }
 
-    void RailVehicle::couple_front(Ref<RailVehicle> other_vehicle, Side other_side) {
+    void RailVehicle::couple_front(RailVehicle *other_vehicle, Side other_side) {
         couple(other_vehicle, Side::FRONT, other_side);
     }
 
-    void RailVehicle::couple_back(Ref<RailVehicle> other_vehicle, Side other_side) {
+    void RailVehicle::couple_back(RailVehicle *other_vehicle, Side other_side) {
         couple(other_vehicle, Side::BACK, other_side);
     }
 
-    Ref<RailVehicle> RailVehicle::uncouple_front() {
-        if (!front.is_valid()) {
+    RailVehicle *RailVehicle::uncouple_front() {
+        if (front == nullptr) {
             UtilityFunctions::push_error("No car coupled at the front.");
             return nullptr;
         }
-        Ref<RailVehicle> uncoupled = front;
-        front->back.unref();
-        front.unref();
+        RailVehicle *uncoupled = front;
+        front->back = nullptr;
+        front = nullptr;
         return uncoupled;
     }
 
@@ -67,14 +72,14 @@ namespace godot {
         return trainset;
     }
 
-    Ref<RailVehicle> RailVehicle::uncouple_back() {
-        if (!back.is_valid()) {
+    RailVehicle *RailVehicle::uncouple_back() {
+        if (back == nullptr) {
             UtilityFunctions::push_error("No car coupled at the back.");
             return nullptr;
         }
-        Ref<RailVehicle> uncoupled = back;
-        back->front.unref();
-        back.unref();
+        RailVehicle *uncoupled = back;
+        back->front = nullptr;
+        back = nullptr;
         return uncoupled;
     }
 } // namespace godot
