@@ -23,6 +23,13 @@ namespace godot {
     void TrainController::_bind_methods() {
         ClassDB::bind_method(D_METHOD("get_state"), &TrainController::get_state);
         ClassDB::bind_method(D_METHOD("get_config"), &TrainController::get_config);
+        ClassDB::bind_method(D_METHOD("get_train_parts"), &TrainController::get_train_parts);
+        ClassDB::bind_method(D_METHOD("set_train_parts", "parts"), &TrainController::set_train_parts);
+
+        ADD_PROPERTY(
+                PropertyInfo(Variant::ARRAY, "train_parts", PROPERTY_HINT_ARRAY_TYPE, "TrainPart"), "set_train_parts",
+                "get_train_parts");
+
         ADD_PROPERTY(
                 PropertyInfo(
                         Variant::DICTIONARY, "state", PROPERTY_HINT_NONE, "",
@@ -431,6 +438,10 @@ namespace godot {
         return state;
     }
 
+    Dictionary &TrainController::_get_state_internal() {
+        return state;
+    }
+
     void TrainController::emit_command_received_signal(const String &command, const Variant &p1, const Variant &p2) {
         emit_signal(COMMAND_RECEIVED, command, p1, p2);
     }
@@ -481,5 +492,21 @@ namespace godot {
 
     void TrainController::radio(const bool p_enabled) {
         mover->Radio = p_enabled;
+    }
+
+    Array TrainController::get_train_parts() const {
+        return train_parts;
+    }
+
+    void TrainController::set_train_parts(const Array &p_train_parts) {
+        train_parts = p_train_parts;
+        for (int i = 0; i < train_parts.size(); i++) {
+            TrainPart *part = Object::cast_to<TrainPart>(train_parts[i]);
+            if (part) {
+                part->_init(this); // Przekaż wskaźnik kontrolera
+            } else {
+                UtilityFunctions::print("Invalid TrainPart found in train_parts array.");
+            }
+        }
     }
 } // namespace godot

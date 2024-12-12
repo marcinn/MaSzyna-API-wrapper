@@ -17,6 +17,8 @@ namespace godot {
             GDCLASS(TrainController, RailVehicle)
         private:
             TMoverParameters *mover;
+            Array train_parts;
+
             String train_id = "";
 
             double initial_velocity = 0.0;
@@ -95,6 +97,10 @@ namespace godot {
             void update_mover();
 
             TMoverParameters *get_mover() const;
+
+            Array get_train_parts() const;
+            void set_train_parts(const Array &p_train_parts);
+
             static void _bind_methods();
 
             String get_train_id() const;
@@ -117,7 +123,9 @@ namespace godot {
             String get_axle_arrangement() const;
 
             void set_state(const Dictionary &p_state);
+
             Dictionary get_state();
+            Dictionary &_get_state_internal();
 
             TrainController();
             ~TrainController() override = default;
