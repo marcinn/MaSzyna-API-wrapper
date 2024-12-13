@@ -1,6 +1,6 @@
 #pragma once
 #include <functional>
-#include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/classes/resource.hpp>
 #include "./TrainSystem.hpp"
 #include "TrainController.hpp"
 
@@ -10,8 +10,8 @@
     }
 
 namespace godot {
-    class TrainPart : public RefCounted {
-            GDCLASS(TrainPart, RefCounted)
+    class TrainPart : public Resource {
+            GDCLASS(TrainPart, Resource)
         public:
             static void _bind_methods();
 
@@ -21,7 +21,7 @@ namespace godot {
         protected:
             void _notification(int p_what);
             bool enabled = true;
-            bool enabled_changed = false;
+            bool enabled_changed = true;
             bool _dirty = false;
             TrainController *train_controller_node;
 

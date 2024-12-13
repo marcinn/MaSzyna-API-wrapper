@@ -69,12 +69,16 @@ namespace godot {
     void TrainPart::register_command(const String &command, const Callable &callback) {
         if (train_controller_node) {
             TrainSystem::get_instance()->register_command(train_controller_node->get_train_id(), command, callback);
+        } else {
+            log_debug("Cannot register command " + command + ": no train_controller_node!");
         }
     }
 
     void TrainPart::unregister_command(const String &command, const Callable &callback) {
         if (train_controller_node) {
             TrainSystem::get_instance()->unregister_command(train_controller_node->get_train_id(), command, callback);
+        } else {
+            log_debug("Cannot unregister command " + command + ": no train_controller_node!");
         }
     }
 
@@ -100,6 +104,7 @@ namespace godot {
         if (enabled_changed) {
             enabled_changed = false;
             if (enabled && !_commands_registered) {
+                _register_commands();
                 _commands_registered = true;
             } else if (!enabled && _commands_registered) {
                 _unregister_commands();
@@ -117,14 +122,17 @@ namespace godot {
 
     void TrainPart::_init(TrainController *p_train_controller) {
         train_controller_node = p_train_controller;
+        /*
         train_controller_node->connect(TrainController::MOVER_CONFIG_CHANGED_SIGNAL, Callable(this, "update_mover"));
+        */
     }
 
     void TrainPart::_cleanup() {
+        /*
         if (train_controller_node != nullptr) {
             train_controller_node->disconnect(
                     TrainController::MOVER_CONFIG_CHANGED_SIGNAL, Callable(this, "update_mover"));
-        }
+        }*/
     }
 
     void TrainPart::_notification(int what) {

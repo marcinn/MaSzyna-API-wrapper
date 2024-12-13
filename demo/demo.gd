@@ -33,9 +33,12 @@ func _process(delta: float) -> void:
         $%BatteryProgressBar.value = bv
         $%BatteryValue.text = "%.2f V" % [bv]
 
-        var security_state = security.get_mover_state()
-        var brake_state = brake.get_mover_state()
-        var engine_state = engine.get_mover_state()
+        #var security_state = security.get_mover_state()
+        #var brake_state = brake.get_mover_state()
+        #var engine_state = engine.get_mover_state()
+        var security_state = train_state
+        var brake_state = train_state
+        var engine_state = train_state
 
         draw_dictionary(engine_state, $%DebugEngine)
         draw_dictionary(train_state, $%DebugTrain)

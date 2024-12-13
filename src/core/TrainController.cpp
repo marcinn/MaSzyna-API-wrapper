@@ -194,6 +194,13 @@ namespace godot {
         switch (p_what) {
             case NOTIFICATION_ENTER_TREE:
                 TrainSystem::get_instance()->register_train(this->get_train_id(), this);
+                for (int i = 0; i < train_parts.size(); i++) {
+                    Ref<TrainPart> train_part = train_parts[i];
+                    if (train_part.is_valid()) {
+                        train_part->_init(this);
+                    }
+                }
+
                 register_command("battery", Callable(this, "battery"));
                 register_command("main_controller_increase", Callable(this, "main_controller_increase"));
                 register_command("main_controller_decrease", Callable(this, "main_controller_decrease"));
@@ -232,6 +239,14 @@ namespace godot {
              */
             emit_signal(MOVER_CONFIG_CHANGED_SIGNAL);
 
+            for (int i = 0; i < train_parts.size(); i++) {
+                Ref<TrainPart> train_part = train_parts[i];
+                if (train_part.is_valid()) {
+                    train_part->update_mover();
+                }
+            }
+
+
             _dirty = false;
             _dirty_prop = true; // sforsowanie odswiezenia stanu lokalnych propsow
         }
@@ -243,6 +258,14 @@ namespace godot {
     }
 
     void TrainController::_process_mover(const double delta) {
+
+        for (int i = 0; i < train_parts.size(); i++) {
+            Ref<TrainPart> train_part = train_parts[i];
+            if (train_part.is_valid()) {
+                train_part->_process_mover(mover, delta);
+            }
+        }
+
         TLocation mock_location;
         TRotation mock_rotation;
         mover->ComputeTotalForce(delta);
