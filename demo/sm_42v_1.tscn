@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://c5hi8nsm1d2hb"]
+[gd_scene load_steps=7 format=3 uid="uid://c5hi8nsm1d2hb"]
 
 [ext_resource type="Script" path="res://sm_42v_1.gd" id="1_vib8j"]
+[ext_resource type="Script" path="res://custom_train_part.gd" id="1_wq48c"]
 
 [sub_resource type="TrainBrake" id="TrainBrake_71hh7"]
 valve/type = 20
@@ -45,8 +46,12 @@ aware_system/active = true
 aware_delay = 60.0
 emergency_brake_delay = 2.5
 
+[sub_resource type="GenericTrainPart" id="GenericTrainPart_rir5s"]
+script = ExtResource("1_wq48c")
+some_public_prop = 0.0
+
 [node name="SM42v1" type="TrainController"]
-train_parts = [SubResource("TrainBrake_71hh7"), SubResource("TrainDieselElectricEngine_txhkx"), SubResource("TrainSecuritySystem_rj282")]
+train_parts = Array[TrainPart]([SubResource("TrainBrake_71hh7"), SubResource("TrainDieselElectricEngine_txhkx"), SubResource("TrainSecuritySystem_rj282"), SubResource("GenericTrainPart_rir5s")])
 train_id = "sm42v1"
 type_name = "6d"
 dimensions/mass = 74000.0

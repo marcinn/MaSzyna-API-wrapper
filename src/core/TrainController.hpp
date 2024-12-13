@@ -17,7 +17,7 @@ namespace godot {
             GDCLASS(TrainController, RailVehicle)
         private:
             TMoverParameters *mover;
-            Array train_parts;
+            TypedArray<TrainPart> train_parts;
 
             String train_id = "";
 
@@ -98,8 +98,8 @@ namespace godot {
 
             TMoverParameters *get_mover() const;
 
-            Array get_train_parts() const;
-            void set_train_parts(const Array &p_train_parts);
+            TypedArray<TrainPart> get_train_parts() const;
+            void set_train_parts(const TypedArray<TrainPart> &p_train_parts);
 
             static void _bind_methods();
 

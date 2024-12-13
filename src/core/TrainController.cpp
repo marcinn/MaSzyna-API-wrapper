@@ -27,8 +27,10 @@ namespace godot {
         ClassDB::bind_method(D_METHOD("set_train_parts", "parts"), &TrainController::set_train_parts);
 
         ADD_PROPERTY(
-                PropertyInfo(Variant::ARRAY, "train_parts", PROPERTY_HINT_ARRAY_TYPE, "TrainPart"), "set_train_parts",
-                "get_train_parts");
+                PropertyInfo(
+                        Variant::ARRAY, "train_parts", PROPERTY_HINT_TYPE_STRING,
+                        String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":TrainPart"),
+                "set_train_parts", "get_train_parts");
 
         ADD_PROPERTY(
                 PropertyInfo(
@@ -517,11 +519,11 @@ namespace godot {
         mover->Radio = p_enabled;
     }
 
-    Array TrainController::get_train_parts() const {
+    TypedArray<TrainPart> TrainController::get_train_parts() const {
         return train_parts;
     }
 
-    void TrainController::set_train_parts(const Array &p_train_parts) {
+    void TrainController::set_train_parts(const TypedArray<TrainPart> &p_train_parts) {
         train_parts = p_train_parts;
         for (int i = 0; i < train_parts.size(); i++) {
             TrainPart *part = Object::cast_to<TrainPart>(train_parts[i]);
