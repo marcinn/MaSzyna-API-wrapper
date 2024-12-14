@@ -1,18 +1,33 @@
 #!/usr/bin/env python
 import os
 
+from SCons.Script import (  # pylint: disable=no-name-in-module
+    Variables,
+    SConscript,
+    Environment,
+    ARGUMENTS,
+    PathVariable,
+    BoolVariable,
+    Glob,
+    Default,
+    Help,
+    Copy,
+)
 
-def normalize_path(val, env):
-    return val if os.path.isabs(val) else os.path.join(env.Dir("#").abspath, val)
+from SCons.Errors import UserError
 
 
-def validate_parent_dir(key, val, env):
-    if not os.path.isdir(normalize_path(os.path.dirname(val), env)):
-        raise UserError("'%s' is not a directory: %s" %
-                        (key, os.path.dirname(val)))
+def normalize_path(val, _env):
+    return val if os.path.isabs(val) else os.path.join(_env.Dir("#").abspath, val)
 
 
-libname = "maszyna"
+def validate_parent_dir(key, val, _env):
+    if not os.path.isdir(normalize_path(os.path.dirname(val), _env)):
+        dir_name = os.path.dirname(val)
+        raise UserError(f"'{key}' is not a directory: {dir_name}")
+
+
+libname = "libmaszyna"
 projectdir = "demo"
 
 localEnv = Environment(tools=["default"], PLATFORM="")
@@ -52,7 +67,18 @@ env.Alias("compiledb", compilation_db)
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
 env.Append(CPPPATH=["src/"])
-sources = Glob("src/*.cpp") + Glob("src/maszyna/*.cpp") + Glob("src/maszyna/McZapkie/*.cpp") + Glob("src/switches/*.cpp") + Glob("src/doors/*.cpp") + Glob("src/core/*.cpp") + Glob("src/engines/*.cpp") + Glob("src/systems/*.cpp") + Glob("src/brakes/*.cpp") + Glob("src/types/*.cpp")
+sources = (
+    Glob("src/*.cpp")
+    + Glob("src/maszyna/*.cpp")
+    + Glob("src/maszyna/McZapkie/*.cpp")
+    + Glob("src/switches/*.cpp")
+    + Glob("src/core/*.cpp")
+    + Glob("src/doors/*.cpp")
+    + Glob("src/engines/*.cpp")
+    + Glob("src/systems/*.cpp")
+    + Glob("src/brakes/*.cpp")
+    + Glob("src/types/*.cpp")
+)
 
 if env["target"] in ["editor", "template_debug"]:
     try:
@@ -64,28 +90,64 @@ if env["target"] in ["editor", "template_debug"]:
         print("Not including class reference as we're targeting a pre-4.3 baseline.")
 
 
-if env['target'] in ('debug', 'template_debug'):
-    env.Append(CPPDEFINES=['DEBUG_MODE'])
+if env["target"] in ("debug", "template_debug"):
+    env.Append(CPPDEFINES=["DEBUG_MODE"])
 else:
-    env.Append(CPPDEFINES=['RELEASE_MODE'])
+    env.Append(CPPDEFINES=["RELEASE_MODE"])
 
-file = "{}{}{}".format(libname, env["suffix"], env["SHLIBSUFFIX"])
+# Paths
 
-if env["platform"] == "macos" or env["platform"] == "ios":
-    platlibname = "{}.{}".format(libname, env["platform"])
-    file = "{}.framework/{}".format(env["platform"], platlibname, platlibname)
+addon_files = Glob("addons/libmaszyna/*")
 
-libraryfile = "bin/{}/{}".format(env["platform"], file)
-library = env.SharedLibrary(
-    libraryfile,
-    source=sources,
+suffix = env["suffix"]
+shlib_suffix = env["SHLIBSUFFIX"]
+file = f"{libname}{suffix}{shlib_suffix}"
+platform = env["platform"]
+target_bin_path = os.path.join("bin", platform, file)
+addons_src_path = os.path.join("addons", "libmaszyna")
+addons_dst_path = os.path.join("demo", "addons", "libmaszyna")
+
+if platform in ("macos", "ios"):
+    file = os.path.join(f"{platform}.framework", f"{libname}.{platform}")
+
+# Build
+
+library = env.SharedLibrary(target_bin_path, source=sources)
+
+copy_bin_to_project = env.InstallAs(
+    os.path.join(projectdir, "bin", libname, platform, file), source=library
 )
 
-copy = env.InstallAs(
-    "{}/bin/{}/lib{}".format(projectdir, env["platform"], file), library
+copy_addons_to_project = env.Install(
+    os.path.join(projectdir, "addons", libname), source=addon_files
 )
 
-default_args = [library, copy]
+commands = []
+
+if sources:
+    copy_gut_framework_to_project = env.Command(
+        os.path.join(projectdir, "addons", "gut"),
+        os.path.join("vendor", "gut", "addons", "gut"),
+        Copy("$TARGET", "$SOURCE"),
+    )
+
+    commands += [
+        library,
+        copy_bin_to_project,
+    ]
+
+    if os.path.islink(addons_dst_path):
+        print(f"⚠️ Symlink detected at {addons_dst_path}. Skipping Install().")
+    else:
+        commands.append(
+            env.Install(
+                os.path.join(projectdir, "addons", "libmaszyna"), source=addon_files
+            )
+        )
+        print(f"✅ Files will be installed from {addons_src_path} to {addons_dst_path}")
+
+
 if localEnv.get("compiledb", False):
-    default_args += [compilation_db]
-Default(*default_args)
+    commands.append(compilation_db)
+
+Default(*commands)
