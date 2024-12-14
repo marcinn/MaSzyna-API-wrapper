@@ -1,6 +1,7 @@
 #ifndef TRAINSET_HPP
 #define TRAINSET_HPP
 
+#include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include "RailVehicle.hpp"
 
@@ -23,6 +24,9 @@ namespace godot {
 
             RailVehicle *get_head() const;
             RailVehicle *get_tail() const;
+
+            void attach_to_head(RailVehicle *vehicle, RailVehicle::Side side);
+            void attach_to_tail(RailVehicle *vehicle, RailVehicle::Side side);
     };
 } // namespace godot
 

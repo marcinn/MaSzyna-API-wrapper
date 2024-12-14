@@ -10,11 +10,16 @@ namespace godot {
         ClassDB::bind_method(D_METHOD("to_array"), &TrainSet::to_array);
         ClassDB::bind_method(D_METHOD("get_head"), &TrainSet::get_head);
         ClassDB::bind_method(D_METHOD("get_tail"), &TrainSet::get_tail);
+        ClassDB::bind_method(D_METHOD("attach_to_tail", "vehicle", "side"), &TrainSet::attach_to_tail);
+        ClassDB::bind_method(D_METHOD("attach_to_head", "vehicle", "side"), &TrainSet::attach_to_head);
     }
 
     TrainSet::TrainSet() {}
 
     void TrainSet::_init(RailVehicle *_start_car) {
+        if (_start_car == nullptr) {
+            UtilityFunctions::push_error("Initializing TrainSet without a vehicle!");
+        }
         start_vehicle = _start_car;
     }
 
@@ -32,7 +37,7 @@ namespace godot {
             }
         }
         if (current == nullptr) {
-            UtilityFunctions::push_error("Index out of range.");
+            UtilityFunctions::push_error("TrainSet::get_by_index() Index out of range");
         }
         return current;
     }
@@ -61,5 +66,13 @@ namespace godot {
             current = current->back;
         }
         return current;
+    }
+
+    void TrainSet::attach_to_head(RailVehicle *vehicle, RailVehicle::Side side) {
+        get_head()->couple(vehicle, side, RailVehicle::Side::FRONT);
+    }
+
+    void TrainSet::attach_to_tail(RailVehicle *vehicle, RailVehicle::Side side) {
+        get_tail()->couple(vehicle, side, RailVehicle::Side::BACK);
     }
 } // namespace godot
