@@ -160,7 +160,7 @@ namespace godot {
         /* switch_physics() raczej trzeba zostawic */
         mover->switch_physics(true);
 
-        UtilityFunctions::print("[MaSzyna::TMoverParameters] Mover initialized successfully");
+        DEBUG("[MaSzyna::TMoverParameters] Mover initialized successfully");
         emit_signal(MOVER_INITIALIZED_SIGNAL);
     }
 
@@ -211,7 +211,7 @@ namespace godot {
                 break;
             case NOTIFICATION_READY:
                 initialize_mover();
-                UtilityFunctions::print("TrainController::_ready() signals connected to train parts");
+                DEBUG("TrainController::_ready() signals connected to train parts");
 
                 emit_signal(POWER_CHANGED_SIGNAL, prev_is_powered);
                 emit_signal(RADIO_CHANNEL_CHANGED, prev_radio_channel);
