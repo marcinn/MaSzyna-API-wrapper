@@ -6,6 +6,7 @@
 /docs/vendor
 CMakeLists.txt
 *.o
+*.obj
 *.os
 *.dll
 *.so
