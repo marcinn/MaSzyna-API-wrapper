@@ -1,6 +1,8 @@
 /venv/
 /demo/.godot/
 /demo/*.import
+/demo/bin
+/demo/addons/libmaszyna
 /cmake-build-debug/
 /src/gen/
 /docs/vendor
