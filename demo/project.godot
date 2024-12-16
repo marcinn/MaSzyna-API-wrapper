@@ -17,7 +17,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Console="*res://addons/libmaszyna/console.gd"
+Console="*res://addons/libmaszyna/utility/console.gd"
+PlayerSystem="*res://addons/libmaszyna/player/player_system.gd"
+MultiPlayerManager="*res://addons/libmaszyna/player/multiplayer_manager.gd"
 
 [editor_plugins]
 
