@@ -89,19 +89,19 @@ namespace godot {
         }
     }
     void TrainPart::log_debug(const String &line) {
-        log(LogSystem::LogLevel::LOGLEVEL_DEBUG, line);
+        log(LogSystem::LogLevel::DEBUG, line);
     }
 
     void TrainPart::log_info(const String &line) {
-        log(LogSystem::LogLevel::LOGLEVEL_INFO, line);
+        log(LogSystem::LogLevel::INFO, line);
     }
 
     void TrainPart::log_warning(const String &line) {
-        log(LogSystem::LogLevel::LOGLEVEL_WARNING, line);
+        log(LogSystem::LogLevel::WARNING, line);
     }
 
     void TrainPart::log_error(const String &line) {
-        log(LogSystem::LogLevel::LOGLEVEL_ERROR, line);
+        log(LogSystem::LogLevel::ERROR, line);
     }
 
     void TrainPart::register_command(const String &command, const Callable &callback) {
