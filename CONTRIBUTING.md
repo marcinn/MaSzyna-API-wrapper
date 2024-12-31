@@ -23,9 +23,6 @@ git pull
 git switch --create [prefix]/[feature-or-fix-name]
 ```
 
-BRanch prefixes look as following:
-
-
 Commit your changes, then push the branch to your fork with `git push -u fork` and open a pull request on the base repository.
 
 Your code style must comply with [our Code style](CODE_STYLE.md) and pass CI/CD checks in order for your contribution to be merged
