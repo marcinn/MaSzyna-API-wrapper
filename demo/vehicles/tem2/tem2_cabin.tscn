@@ -25,5 +25,5 @@ visible = true
 visibility_parent = NodePath("")
 layers = 1
 script = ExtResource("2_6c6uo")
-data_path = "/dynamic/pkp/tem2_v2"
+data_path = "dynamic/pkp/tem2_v2"
 model_filename = "kabina-tem2a"

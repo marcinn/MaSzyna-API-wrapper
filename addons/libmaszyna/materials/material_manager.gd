@@ -119,10 +119,11 @@ func load_texture(model_path, material_name, global:bool=true) -> Texture:
     var data_dir = project_data_dir if project_data_dir else ""
 
     var im = Image.new()
-
+    var unprefixed_model_path = "/".join(model_path.split("/").slice(1))
     var possible_paths = [
         project_data_dir+"/"+model_path+"/"+material_name+".dds",
         project_data_dir+"/textures/"+model_path+"/"+material_name+".dds",
+        project_data_dir+"/textures/"+unprefixed_model_path+"/"+material_name+".dds",
         project_data_dir+"/"+material_name+".dds",
         project_data_dir+"/"+"textures/"+material_name+".dds",
     ]

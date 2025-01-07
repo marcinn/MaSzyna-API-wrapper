@@ -25,7 +25,7 @@ visible = true
 visibility_parent = NodePath("")
 layers = 1
 script = ExtResource("2_ytbcc")
-data_path = "/dynamic/pkp/impuls_v1"
+data_path = "dynamic/pkp/impuls_v1"
 model_filename = "kabina_a_kd"
 
 [node name="E3DModelInstance3" type="VisualInstance3D" parent="."]
@@ -46,7 +46,7 @@ visible = true
 visibility_parent = NodePath("")
 layers = 1
 script = ExtResource("2_ytbcc")
-data_path = "/dynamic/pkp/impuls_v1"
+data_path = "dynamic/pkp/impuls_v1"
 model_filename = "low_poly_int/int_36wea_kd-a"
 skins = ["36wea-019a,1", "36wea-019a,2", "36wea-019a,3", "36wea-019a,4"]
 exclude_node_names = ["cab0", "cab1"]

@@ -32,7 +32,6 @@ func _do_add_submodels(target_node:E3DModelInstance, parent, submodels, editable
     for submodel in submodels:
         var child:Node = _create_submodel_instance(target_node, submodel)
         if child:
-            _update_submodel_material(target_node, child, submodel)
             var internal = InternalMode.INTERNAL_MODE_DISABLED if editable else InternalMode.INTERNAL_MODE_BACK
             parent.add_child(child, false, internal)
 
@@ -52,29 +51,32 @@ func _create_submodel_instance(target_node: E3DModelInstance, submodel: E3DSubMo
     if submodel.skip_rendering:
         return
 
+    var is_name_excluded = target_node.exclude_node_names.any(
+        func(name): return submodel.name == name
+    )
+    if is_name_excluded:
+        return
+
     match submodel.submodel_type:
         E3DSubModel.SubModelType.TRANSFORM:
             obj = Node3D.new()
             obj.name = submodel.name
-
+        E3DSubModel.SubModelType.FREE_SPOTLIGHT:
+            # FIXME: Spotlight3D not supported yet
+            pass
         E3DSubModel.SubModelType.GL_TRIANGLES:
-            var is_name_excluded = target_node.exclude_node_names.any(
-                    func(name): return submodel.name == name
-                )
-
-            if not is_name_excluded:
-                obj = MeshInstance3D.new()
-                obj.name = submodel.name
-                obj.mesh = submodel.mesh
-                obj.visibility_range_begin = submodel.visibility_range_begin
-                obj.visibility_range_end = submodel.visibility_range_end
+            obj = MeshInstance3D.new()
+            obj.name = submodel.name
+            obj.mesh = submodel.mesh
+            obj.visibility_range_begin = submodel.visibility_range_begin
+            obj.visibility_range_end = submodel.visibility_range_end
+            _update_submodel_material(target_node, obj, submodel)
 
     if obj:
         obj.visible = submodel.visible
     return obj
 
 func _update_submodel_material(target_node:E3DModelInstance, subnode:Node3D, submodel:E3DSubModel):
-    var unprefixed_model_path = "/".join(target_node.data_path.split("/").slice(1))
     if submodel.dynamic_material:
         if target_node.skins.size() < submodel.dynamic_material_index + 1:
             push_warning("Model %s has no skins set, but submodel requires material #%s" % [target_node.name, submodel.dynamic_material_index])
@@ -86,7 +88,7 @@ func _update_submodel_material(target_node:E3DModelInstance, subnode:Node3D, sub
             )
 
             var skin = target_node.skins[submodel.dynamic_material_index]
-            var material = MaterialManager.get_material(unprefixed_model_path, skin, transparency)
+            var material = MaterialManager.get_material(target_node.data_path, skin, transparency)
             subnode.material_override = material
     else:
         if submodel.material_colored:
@@ -99,7 +101,7 @@ func _update_submodel_material(target_node:E3DModelInstance, subnode:Node3D, sub
                 else MaterialManager.Transparency.Disabled
             )
             subnode.material_override = MaterialManager.get_material(
-                unprefixed_model_path,
+                target_node.data_path,
                 submodel.material_name,
                 transparency,
                 false, # model.is_sky,  # unshaded if sky

@@ -89,7 +89,17 @@ func _read_submodel(file, chunk_size: int) -> Dictionary:
 
     result["lod_max_distance"] = file.get_float()
     result["lod_min_distance"] = file.get_float()
-    file.get_buffer(32) # skip attrs for lightg
+    var light = {
+        "near_atten_start": file.get_float(),
+        "near_atten_end": file.get_float(),
+        "near_atten_enabled": file.get_float() > 0.00001,
+        "far_atten_decay": int(file.get_float()),
+        "far_decay_radius": file.get_float(),
+        "far_cos_fallof_angle": file.get_float(),
+        "far_cos_hotspot_angle": file.get_float(),
+        "far_cos_view_angle": file.get_float(),
+    }
+    result["light"] = light
     result["index_count"] = file.get_32()
     result["first_index_idx"] = file.get_32()
     result["transparent"] = result["flags"] & 0b000001
