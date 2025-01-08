@@ -16,18 +16,43 @@ const _transparency_codes = {
 }
 
 var use_alpha_transparency:bool = false
+var use_transparency:bool = true
+
+func _apply_settings():
+    use_alpha_transparency = UserSettings.get_setting("e3d", "use_alpha_transparency", false)
+    use_transparency = UserSettings.get_setting("render", "use_transparency", true)
 
 func clear_cache():
     _textures.clear()
     _materials.clear()
-    use_alpha_transparency = UserSettings.get_setting("e3d", "use_alpha_transparency", false)
+    _apply_settings()
 
 func _ready():
     UserSettings.config_changed.connect(clear_cache)
     UserSettings.cache_clear_requested.connect(clear_cache)
 
 func load_material(model_path, material_name) -> MaszynaMaterial:
-    return MaterialParser.parse(model_path, material_name)
+    var final_path = ""
+    var project_data_dir = UserSettings.get_maszyna_game_dir()
+
+    var possible_paths = [
+        project_data_dir+"/"+model_path+"/"+material_name+".mat",
+        project_data_dir+"/textures/"+model_path+"/"+material_name+".mat",
+        project_data_dir+"/"+material_name+".mat",
+        project_data_dir+"/"+"textures/"+material_name+".mat",
+    ]
+    for p in possible_paths:
+        if FileAccess.file_exists(p):
+            final_path = p
+            break
+    if final_path:
+        return MaterialParser.parse(final_path)
+    else:
+        # Material (.mat) file not found
+        # Assuming there is only DDS texture
+        var mat = MaszynaMaterial.new()
+        mat.albedo_texture_path = material_name
+        return mat
 
 func get_material(
     model_path:String,
@@ -36,6 +61,9 @@ func get_material(
     is_sky:bool = false,
     diffuse_color: Color = Color(1.0, 1.0, 1.0)
 ) -> StandardMaterial3D:
+    if not use_transparency:
+        transparent = Transparency.Disabled
+
     var _code = "%s/%s:t=%s:s=%s" % [
         model_path,
         material_path,
@@ -70,11 +98,11 @@ func get_material(
 
         # DETECT ALPHA FROM TEXTURE
         var texture_alpha:bool = false
-        if _m.albedo_texture:
+        if use_transparency and _m.albedo_texture:
             var img:Image = _m.albedo_texture.get_image()
             texture_alpha = not img.detect_alpha() == Image.ALPHA_NONE
 
-        if texture_alpha or  _m.albedo_texture.has_alpha():
+        if use_transparency and (texture_alpha or _m.albedo_texture.has_alpha()):
             # FIXME: the legacy exe uses alpha channel mostly for rendering
             # windows, so ALPHA or ALPHA_DEPTH_PRE_PASS should be enabled
             # here. But both causes issues with rendering (priorirty and
@@ -135,6 +163,7 @@ func load_texture(model_path, material_name, global:bool=true) -> Texture:
             break
 
     if not final_path:
+        push_warning("Texture not found: " + ", ".join(possible_paths))
         return _unknown_texture
 
     if _textures.has(final_path):

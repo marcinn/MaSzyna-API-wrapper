@@ -17,8 +17,14 @@ func _ready() -> void:
     Console.add_command("get", self.console_get_train_state, ["train", "parameter"], 1, "Get train state / parameter")
     Console.add_command("prop", self.console_get_config_value, ["train", "property"], 2, "Get train config property")
     Console.add_command("props", self.console_get_config_properties, ["train"], 1, "List train config properties")
-
+    Console.add_command("gamedir", self.console_game_dir, ["path"], 0, "Get/set game dir")
     LogSystem.log_updated.connect(self.console_print_log)
+
+func console_game_dir(path=null):
+    if path:
+        UserSettings.save_maszyna_game_dir(path)
+    else:
+        Console.print_line(UserSettings.get_maszyna_game_dir())
 
 func console_get_config_value(train, property):
     Console.print_line("%s" % TrainSystem.get_config_property(train, property))

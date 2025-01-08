@@ -51,6 +51,8 @@ func _ready():
 func _on_console_toggle(console_visible):
     enabled = not console_visible
 
+
+
 func _input(event):
     if not enabled:
         return
@@ -95,22 +97,43 @@ func _input(event):
     if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED and event is InputEventMouseMotion:
         _update_mouselook(event.relative)
 
+
 # Updates mouselook and movement every frame
 func _process(delta):
     _update_movement(delta)
 
+    var look_horiz = Input.get_action_strength("look_rotate_right")-Input.get_action_strength("look_rotate_left")
+    var look_vert = Input.get_action_strength("look_rotate_down")-Input.get_action_strength("look_rotate_up")
+    if look_horiz or look_vert:
+        var _vec = Vector2(look_horiz, look_vert) * 8
+        _update_mouselook(_vec)
+
+func set_movement(vec: Vector3):
+    _w = vec.z if vec.z > 0 else 0
+    _s = -vec.z if vec.z < 0 else 0
+
+
 # Updates camera movement
 func _update_movement(delta):
-    # Computes desired direction from key states
     _direction = Vector3(_d - _a , _e - _q, _s - _w)
+
+    var move_horiz = Input.get_action_strength("look_move_right")-Input.get_action_strength("look_move_left")
+    var move_depth = Input.get_action_strength("look_move_backward")-Input.get_action_strength("look_move_forward")
+    if move_horiz:
+        _direction.x = move_horiz
+    if move_depth:
+        _direction.z = move_depth
+
 
     var accel = acceleration_fast if accel_mode == 2 else acceleration_medium if accel_mode == 1 else acceleration
     # Computes the change in velocity due to desired direction and "drag"
     # The "drag" is a constant acceleration on the camera to bring it's velocity to 0
     if _direction.is_zero_approx():
-        _velocity = lerp(_velocity, Vector3.ZERO, 0.1 * delta * deceleration * 4)
+        #_velocity = lerp(_velocity, Vector3.ZERO, 0.1 * delta * deceleration * 4)
+        _velocity = Vector3.ZERO
     else:
-        _velocity = _direction * Vector3.ONE * 10 * velocity_multiplier * accel * delta
+        #_velocity = _direction * Vector3.ONE * 10 * velocity_multiplier * accel * delta
+        _velocity = _direction * velocity_multiplier * accel * 0.2
 
     # Checks if we should bother translating the camera
     var new_position = transform.translated_local(_velocity * delta).origin

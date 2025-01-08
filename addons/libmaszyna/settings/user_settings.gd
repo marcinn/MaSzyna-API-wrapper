@@ -8,11 +8,14 @@ signal cache_clear_requested  # probably should be somewhere else?
 signal models_reload_requested  # probably should be somewhere else?
 signal cache_cleared
 
+const BASE_PACK_DIR = "res://mods/maszyna-base/"
+const RELEASE_GAME_DIR = "."
+
 var config_file_path = "user://settings.cfg"
 var config = ConfigFile.new()
 var DEFAULTS = {
     "maszyna": {
-        "game_dir": ".",
+        "game_dir": RELEASE_GAME_DIR,
     }
 }
 
@@ -48,14 +51,11 @@ func get_setting(section: String, key: String, default_value = null):
     return config.get_value(section, key, default_value)
 
 func get_maszyna_game_dir():
-    if OS.has_feature("release") and not OS.has_feature("editor"):
-        return "."
+    var dir = config.get_value(MASZYNA_GAMEDIR_SECTION, MASZYNA_GAMEDIR_KEY)
+    if not dir:
+        return BASE_PACK_DIR if OS.has_feature("android") else RELEASE_GAME_DIR
     else:
-        var dir = config.get_value(MASZYNA_GAMEDIR_SECTION, MASZYNA_GAMEDIR_KEY)
-        if not dir:
-            return "."
-        else:
-            return dir
+        return dir
 
 func save_maszyna_game_dir(path):
     save_setting(MASZYNA_GAMEDIR_SECTION, MASZYNA_GAMEDIR_KEY, path)

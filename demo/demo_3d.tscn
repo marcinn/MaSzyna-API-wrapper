@@ -1,6 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://bsp43pawp632n"]
+[gd_scene load_steps=19 format=3 uid="uid://bsp43pawp632n"]
 
 [ext_resource type="Script" path="res://demo_3d.gd" id="1_ut343"]
+[ext_resource type="PackedScene" uid="uid://b2p8eadeyuadc" path="res://addons/libmaszyna/fps_counter.tscn" id="2_de7jp"]
+[ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="2_dxqk4"]
 [ext_resource type="PackedScene" uid="uid://dgm10m7u26drx" path="res://addons/libmaszyna/console/developer_console.tscn" id="2_ig825"]
 [ext_resource type="Material" uid="uid://b7qto250huuby" path="res://materials/custom_demo_ground.tres" id="2_imrpy"]
 [ext_resource type="PackedScene" uid="uid://1djubq5jy2wx" path="res://loading_screen/loading_screen.tscn" id="2_n5hjg"]
@@ -31,13 +33,12 @@ sky_material = SubResource("ShaderMaterial_s18ef")
 [sub_resource type="Environment" id="Environment_jrns0"]
 background_mode = 2
 sky = SubResource("Sky_pybda")
+reflected_light_source = 2
 tonemap_mode = 3
 tonemap_white = 6.44
-ssr_enabled = true
-ssao_enabled = true
-ssil_enabled = true
-sdfgi_enabled = true
 sdfgi_min_cell_size = 0.488281
+sdfgi_cascade0_distance = 31.25
+sdfgi_max_distance = 500.0
 glow_enabled = true
 glow_intensity = 0.9
 glow_bloom = 0.08
@@ -49,17 +50,70 @@ fog_density = 0.1736
 fog_sky_affect = 0.4
 fog_depth_curve = 1.1487
 fog_depth_end = 67.0
-volumetric_fog_enabled = true
 volumetric_fog_density = 0.029
 volumetric_fog_anisotropy = 0.49
 volumetric_fog_length = 2.8
 volumetric_fog_detail_spread = 3.95852
 volumetric_fog_sky_affect = 0.405
 volumetric_fog_temporal_reprojection_amount = 0.99
-adjustment_enabled = true
 
 [node name="Demo3D" type="Node3D"]
 script = ExtResource("1_ut343")
+
+[node name="VirtualJoystick_Movement" parent="." instance=ExtResource("2_dxqk4")]
+offset_top = -300.0
+offset_bottom = 0.0
+visibility_mode = 1
+action_left = "look_move_left"
+action_right = "look_move_right"
+action_up = "look_move_forward"
+action_down = "look_move_backward"
+
+[node name="VirtualJoystick_LookRotate" parent="." instance=ExtResource("2_dxqk4")]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -300.0
+offset_top = -300.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 0
+visibility_mode = 1
+action_left = "look_rotate_left"
+action_right = "look_rotate_right"
+action_up = "look_rotate_up"
+action_down = "look_rotate_down"
+
+[node name="TopMenu" type="HBoxContainer" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -503.0
+offset_bottom = 42.0
+grow_horizontal = 0
+alignment = 2
+
+[node name="EnterTrainBtn" type="Button" parent="TopMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Enter train"
+
+[node name="ToggleCabinBtn" type="Button" parent="TopMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Toggle cabin"
+
+[node name="Controls" type="Button" parent="TopMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Controls"
+
+[node name="SettingsBtn" type="Button" parent="TopMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Settings"
+
+[node name="FPSCounter" parent="." instance=ExtResource("2_de7jp")]
 
 [node name="LoadingLabel" type="VBoxContainer" parent="."]
 visible = false
@@ -81,6 +135,7 @@ theme_override_font_sizes/font_size = 36
 text = "Loading..."
 
 [node name="LoadingScreen" parent="." instance=ExtResource("2_n5hjg")]
+offset_bottom = 156.0
 
 [node name="DeveloperConsole" parent="." instance=ExtResource("2_ig825")]
 
@@ -136,11 +191,12 @@ light_energy = 2.34
 light_indirect_energy = 2.0
 light_volumetric_fog_energy = 11.811
 shadow_enabled = true
+shadow_reverse_cull_face = true
 directional_shadow_split_1 = 0.032
 directional_shadow_split_2 = 0.1
 directional_shadow_split_3 = 0.3
 directional_shadow_blend_splits = true
-directional_shadow_max_distance = 300.0
+directional_shadow_max_distance = 50.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_jrns0")
@@ -349,5 +405,9 @@ script = ExtResource("4_drlsl")
 data_path = "models/kolejowe"
 model_filename = "klamoty_naprawcze"
 
+[connection signal="pressed" from="TopMenu/EnterTrainBtn" to="." method="_on_enter_train_btn_pressed"]
+[connection signal="pressed" from="TopMenu/ToggleCabinBtn" to="." method="_on_toggle_cabin_btn_pressed"]
+[connection signal="pressed" from="TopMenu/Controls" to="." method="_on_controls_pressed"]
+[connection signal="pressed" from="TopMenu/SettingsBtn" to="." method="_on_settings_btn_pressed"]
 [connection signal="fadein_finished" from="LoadingScreen" to="." method="_on_loading_screen_fadein_finished"]
 [connection signal="visibility_changed" from="UserSettingsPanel" to="." method="_on_user_settings_panel_visibility_changed"]

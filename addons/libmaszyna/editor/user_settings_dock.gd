@@ -9,6 +9,7 @@ func _on_browse_button_up():
 func _refresh():
     UserSettings.load_config()
     %LineEdit.text = UserSettings.get_maszyna_game_dir()
+    %Scale.value = UserSettings.get_setting("render", "scale", 100.0)
 
 
 func _ready():
@@ -75,3 +76,7 @@ func _on_settings_updater_timeout():
 
 func _on_fxaa_button_toggled(toggled_on):
     UserSettings
+
+
+func _on_scale_value_changed(value: float) -> void:
+    UserSettings.save_setting("render", "scale", value)

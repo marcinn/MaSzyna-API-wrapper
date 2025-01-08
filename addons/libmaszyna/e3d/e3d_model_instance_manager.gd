@@ -8,7 +8,10 @@ var _needs_reload: bool = false
 var _instances = []
 
 func _on_user_setting_changed(section, key):
-    if section == "e3d" and key == "use_alpha_transparency":
+    if (
+        (section == "e3d" and key == "use_alpha_transparency")
+        or (section == "render" and key == "use_transparency")
+    ):
         reload_all()
 
 func _ready():
@@ -32,19 +35,15 @@ func reload_all():
 
 func reload_instance(instance: E3DModelInstance):
     if instance.is_inside_tree() and instance.model_filename and instance.data_path:
-        if instance.data_path and instance.model_filename:
+        if instance.instancer == E3DModelInstance.Instancer.NODES and instance.data_path and instance.model_filename:
             var _do_load = func():
                 var model = E3DModelManager.load_model(instance.data_path, instance.model_filename)
                 if model:
-                    match instance.instancer:
-                        E3DModelInstance.Instancer.NODES:
-                            var _do_instantiate = func():
-                                E3DNodesInstancer.instantiate(model, instance, instance.editable_in_editor)
-                                #_update_head_display()
-                                instance.e3d_loaded.emit()
-                            SceneryResourceLoader.schedule(
-                                "Creating model %s" % instance.name, _do_instantiate
-                            )
-                        _:
-                            push_error("Selected instancer is not supported!")
+                    var _do_instantiate = func():
+                        E3DNodesInstancer.instantiate(model, instance, instance.editable_in_editor)
+                        #_update_head_display()
+                        instance.e3d_loaded.emit()
+                    SceneryResourceLoader.schedule(
+                        "Creating model %s" % instance.name, _do_instantiate
+                    )
             SceneryResourceLoader.schedule("Loading %s" % instance.name, _do_load)

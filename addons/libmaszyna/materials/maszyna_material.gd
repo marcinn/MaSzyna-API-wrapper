@@ -1,3 +1,4 @@
+extends Resource
 class_name MaszynaMaterial
 
 func _parse_texture_path(path:String):
@@ -7,24 +8,24 @@ func _parse_texture_path(path:String):
         transparency = StandardMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
     return texture
 
-var transparency:StandardMaterial3D.Transparency = StandardMaterial3D.TRANSPARENCY_DISABLED
+@export var transparency:StandardMaterial3D.Transparency = StandardMaterial3D.TRANSPARENCY_DISABLED
 
-var albedo_texture_path:String = "":
+@export var albedo_texture_path:String = "":
     set(x):
         albedo_texture_path = _parse_texture_path(x)
-var normal_texute_path:String = ""
+@export var normal_texute_path:String = ""
 
-var winter_albedo_texture_path:String = "":
+@export var winter_albedo_texture_path:String = "":
     set(x):
         winter_albedo_texture_path = _parse_texture_path(x)
-var winter_normal_texute_path:String = ""
+@export var winter_normal_texute_path:String = ""
 
-var autumn_albedo_texture_path:String = "":
+@export var autumn_albedo_texture_path:String = "":
     set(x):
         autumn_albedo_texture_path = _parse_texture_path(x)
 
-var shader:String = ""
-var shadow_rank: int
+@export var shader:String = ""
+@export var shadow_rank: int
 
 
 func apply_to_material(mat:StandardMaterial3D):

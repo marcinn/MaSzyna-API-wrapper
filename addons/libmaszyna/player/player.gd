@@ -57,3 +57,8 @@ func _input(event):
 
 func get_camera():
     return $Camera3D
+
+func set_movement(vec: Vector3):
+    var cam = get_tree().root.get_viewport().get_camera_3d()
+    if cam:
+        cam.set_movement(vec)

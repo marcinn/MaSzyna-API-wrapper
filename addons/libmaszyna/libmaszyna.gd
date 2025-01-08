@@ -2,6 +2,8 @@
 extends EditorPlugin
 
 var e3d_loader = E3DResourceFormatLoader.new()
+var mat_loader = MaszynaMaterialResourceFormatLoader.new()
+var e3d_import_plugin = preload("res://addons/libmaszyna/e3d/e3d_import_plugin.gd").new()
 
 # Custom nodes
 
@@ -50,6 +52,10 @@ func _enter_tree():
     )
 
     ResourceLoader.add_resource_format_loader(e3d_loader)
+    ResourceLoader.add_resource_format_loader(mat_loader)
+
+    add_import_plugin(e3d_import_plugin)
+
     user_settings_dock = user_settings_dock_scene.instantiate()
     add_control_to_dock(DOCK_SLOT_RIGHT_UL, user_settings_dock)
 
@@ -60,6 +66,9 @@ func _exit_tree():
     if user_settings_dock:
         remove_control_from_docks(user_settings_dock)
 
+    remove_import_plugin(e3d_import_plugin)
+
+    ResourceLoader.remove_resource_format_loader(mat_loader)
     ResourceLoader.remove_resource_format_loader(e3d_loader)
 
     remove_custom_type("E3DModelInstance")

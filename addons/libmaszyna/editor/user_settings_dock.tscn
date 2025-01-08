@@ -13,6 +13,7 @@ script = ExtResource("1_c24dg")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
+theme_override_constants/separation = 0
 
 [node name="GameDirSection" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -25,6 +26,7 @@ text = "Game Folder"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+text = "/home/marcin/Games/Maszyna"
 
 [node name="Browse" type="Button" parent="VBoxContainer/GameDirSection"]
 layout_mode = 2
@@ -50,6 +52,10 @@ text = "Clear caches"
 layout_mode = 2
 text = "Reload models"
 
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
 [node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
@@ -71,6 +77,7 @@ layout_mode = 2
 
 [node name="SDFGI" type="CheckButton" parent="VBoxContainer/HBoxContainer5"]
 layout_mode = 2
+button_pressed = true
 script = ExtResource("2_2cs74")
 section = "render"
 key = "sdfgi_enabled"
@@ -117,6 +124,7 @@ layout_mode = 2
 
 [node name="SSR" type="CheckButton" parent="VBoxContainer/HBoxContainer8"]
 layout_mode = 2
+button_pressed = true
 script = ExtResource("2_2cs74")
 section = "render"
 key = "ssr_enabled"
@@ -132,6 +140,7 @@ layout_mode = 2
 
 [node name="VolumetricFog" type="CheckButton" parent="VBoxContainer/HBoxContainer4"]
 layout_mode = 2
+button_pressed = true
 script = ExtResource("2_2cs74")
 section = "render"
 key = "volumetric_fog_enabled"
@@ -156,6 +165,22 @@ layout_mode = 2
 text = "E3D Alpha Transparency
 "
 
+[node name="HBoxContainer11" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Transparency" type="CheckButton" parent="VBoxContainer/HBoxContainer11"]
+layout_mode = 2
+button_pressed = true
+script = ExtResource("2_2cs74")
+section = "render"
+key = "use_transparency"
+default = true
+
+[node name="Label3" type="Label" parent="VBoxContainer/HBoxContainer11"]
+layout_mode = 2
+text = "Use transparency
+"
+
 [node name="HBoxContainer10" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
@@ -169,6 +194,21 @@ default = true
 [node name="Label3" type="Label" parent="VBoxContainer/HBoxContainer10"]
 layout_mode = 2
 text = "VSync"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Scaling"
+
+[node name="Scale" type="HSlider" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+step = 10.0
+value = 100.0
 
 [node name="InfoMessageWindow" type="Window" parent="."]
 unique_name_in_owner = true
@@ -201,3 +241,4 @@ horizontal_alignment = 1
 [connection signal="dir_selected" from="VBoxContainer/GameDirSection/DirectorySelectorDialog" to="." method="_on_directory_selector_dialog_dir_selected"]
 [connection signal="button_up" from="VBoxContainer/HBoxContainer2/ClearCacheButton" to="." method="_on_clear_cache_button_button_up"]
 [connection signal="button_up" from="VBoxContainer/HBoxContainer2/ReloadModelsButton" to="." method="_on_reload_models_button_button_up"]
+[connection signal="value_changed" from="VBoxContainer/HBoxContainer/Scale" to="." method="_on_scale_value_changed"]
