@@ -46,7 +46,7 @@ void TrainPartNode::_attach_to_train() {
         return;
     }
 
-    train_part->set_train_node(train_node);
+    //train_part->set_train_node(train_node);
     // add component to entity
     train_node->add_component(train_part);
 
